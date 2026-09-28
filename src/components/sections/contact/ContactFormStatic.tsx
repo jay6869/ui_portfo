@@ -1,5 +1,6 @@
 import { site } from '@/content/site'
-import { COPY, FORM_ENDPOINT, Field, Honeypot, LIMITS } from './formShared'
+import { Field, Honeypot } from './formShared'
+import { COPY, FORM_ENDPOINT, LIMITS } from './formConfig'
 import s from './Contact.module.css'
 
 /**
