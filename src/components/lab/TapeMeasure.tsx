@@ -15,6 +15,7 @@ export default function TapeMeasure() {
         <span className="mono dim">cm</span>
       </p>
       <div className={s.needle} aria-hidden="true" />
+      {/* Focusable so keyboard users can scroll it (axe: scrollable-region-focusable) */}
       <div
         className={s.ruler}
         tabIndex={0}

@@ -4,7 +4,7 @@ import type { AboutContent } from './schema'
  * About section. The bio is a first draft written from the facts you gave — anything marked
  * [EDIT ME] is a guess or a gap only you can fill.
  */
-export const about = {
+export const about: AboutContent = {
   bio: [
     "I'm Janith, a web developer from Sri Lanka. I'm in the third year of a BSc (Hons) in Information Technology at SLIIT, which mostly means I write code during the day and then more code at night, for fun, like a normal person.",
     'I care most about the front end: interfaces that feel solid, motion that has a reason to exist, and pages that still load fast on a cheap phone with one bar of signal. I got into this because [EDIT ME: the real reason — a site you saw, a game you modded, a teacher, boredom].',
@@ -36,6 +36,7 @@ export const about = {
   ],
   /** Replace with { type: 'image', src, avif, webp, width, height, color, alt } when you have a photo. */
   portrait: { type: 'placeholder', alt: 'Portrait of Janith Godage (placeholder)' },
+  /** lat/lng place the marker; the map always frames the whole island, `zoom` caps zoom-in. */
   map: {
     enabled: true,
     lat: 7.2,
@@ -43,4 +44,4 @@ export const about = {
     zoom: 7,
     label: 'Somewhere around here',
   },
-} satisfies AboutContent
+}

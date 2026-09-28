@@ -40,6 +40,8 @@ export default tseslint.config(
       'react-hooks/purity': 'off',
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
       // role="list" on styled lists is intentional: Safari drops list semantics with list-style:none
+      // Scrollable regions must be focusable for keyboard users (axe scrollable-region-focusable)
+      'jsx-a11y/no-noninteractive-tabindex': ['error', { roles: ['tabpanel', 'region'] }],
       'jsx-a11y/no-redundant-roles': ['error', { ul: ['list'], ol: ['list'] }],
       '@typescript-eslint/no-unused-vars': [
         'error',

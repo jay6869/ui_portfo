@@ -4,7 +4,7 @@ import type { SiteContent } from './schema'
  * Site-wide copy and facts. Edit freely — components never hard-code text.
  * Strings containing [PLACEHOLDER] or [EDIT ME] render as visible tags until you replace them.
  */
-export const site = {
+export const site: SiteContent = {
   name: 'Janith Godage',
   firstName: 'Janith',
   monogram: 'JG',
@@ -126,6 +126,6 @@ export const site = {
     body: "This page doesn't exist, or I broke it. Probably the first one.",
     cta: 'Take me home',
   },
-} satisfies SiteContent
+}
 
 export type Site = typeof site

@@ -52,6 +52,8 @@ export default function ToneKeys({ onSignal }: { onSignal: number }) {
   }
 
   return (
+    // Keydown bubbles up from the focused key buttons; the group just maps A–K to notes.
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <div
       className={s.keys}
       role="group"
