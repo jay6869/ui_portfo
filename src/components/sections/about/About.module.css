@@ -33,7 +33,10 @@
 .portraitNote {
   position: absolute;
   left: var(--space-s);
+  right: var(--space-s);
   bottom: var(--space-s);
+  width: fit-content;
+  max-width: calc(100% - 2 * var(--space-s));
   padding: 6px 10px;
   border-radius: var(--radius-pill);
   background: var(--bg);

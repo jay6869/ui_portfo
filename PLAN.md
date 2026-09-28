@@ -1,6 +1,10 @@
 # PLAN — janithgodage.dev
 
-Build plan for the portfolio. The brief is the spec; this file covers *how*.
+Build plan for the portfolio. The brief is the spec; this file covers _how_.
+
+> Written before the build. Where the implementation ended up differing (shared-element FLIP
+> instead of `layoutId`, CSS-driven preloader, JS fetched after first paint, per-section
+> hydration), the as-built reasoning is in **DECISIONS.md**.
 
 ## 1. Architecture at a glance
 
@@ -20,9 +24,11 @@ Build plan for the portfolio. The brief is the spec; this file covers *how*.
 ```
 
 ### Why prerender?
+
 LCP < 2.0 s on throttled mobile is not realistic for a client-only SPA: the hero text would wait for
 ~150 KB of JS. Each route is rendered to static HTML at build time and hydrated on the client. The
 same work also gets us:
+
 - real content with JS disabled or broken (the brief's "readable with animation failing"),
 - correct `<title>`, OG and canonical tags per route without a server,
 - a real `404.html` with a 404 status instead of a soft 404.
@@ -60,12 +66,12 @@ cypress/                   e2e smoke specs
 
 ## 3. Component list
 
-| Area | Components |
-| --- | --- |
-| Primitives | `Button`, `Magnetic`, `TextRoll`, `SplitReveal`, `Marquee`, `Tag`, `SectionHeading`, `ProjectRow`, `Toast`/`Toaster`, `Dialog`, `Copy` |
-| Chrome | `Header`, `Hud`, `Cursor`, `Grain`, `Preloader`, `CommandPalette`, `MobileMenu`, `ThemeToggle`, `SoundToggle`, `LocalTime`, `Shortcuts`, `PageTransition`, `SharedCover`, `DevBanner`, `SkipLink` |
-| Sections | `Hero`, `StackMarquee`, `Work` (`WorkList` desktop, `WorkCarousel` mobile, `FloatingPreview`), `Services`, `StackViz`, `GithubStrip`, `Lab`, `About` (`SriLankaMap` lazy), `Contact` (`ContactForm` lazy-enhanced), `Footer` |
-| Routes | `Home`, `CaseStudy`, `NotFound` |
+| Area       | Components                                                                                                                                                                                                                   |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Primitives | `Button`, `Magnetic`, `TextRoll`, `SplitReveal`, `Marquee`, `Tag`, `SectionHeading`, `ProjectRow`, `Toast`/`Toaster`, `Dialog`, `Copy`                                                                                       |
+| Chrome     | `Header`, `Hud`, `Cursor`, `Grain`, `Preloader`, `CommandPalette`, `MobileMenu`, `ThemeToggle`, `SoundToggle`, `LocalTime`, `Shortcuts`, `PageTransition`, `SharedCover`, `DevBanner`, `SkipLink`                            |
+| Sections   | `Hero`, `StackMarquee`, `Work` (`WorkList` desktop, `WorkCarousel` mobile, `FloatingPreview`), `Services`, `StackViz`, `GithubStrip`, `Lab`, `About` (`SriLankaMap` lazy), `Contact` (`ContactForm` lazy-enhanced), `Footer` |
+| Routes     | `Home`, `CaseStudy`, `NotFound`                                                                                                                                                                                              |
 
 ## 4. Animation architecture
 
@@ -88,6 +94,7 @@ cypress/                   e2e smoke specs
   them off-screen or the tab is hidden. Three.js resources are disposed on unmount.
 
 ### Shared-element transition (work → case study)
+
 The desktop list has no inline covers. Its cover is the floating preview that follows the cursor.
 Clicking a row expands that preview into the case-study cover. Mobile expands the carousel card
 cover. Implementation: a persistent fixed-position `SharedCover` layer at the app root holds a
@@ -102,8 +109,8 @@ All other route changes get the charcoal panel wipe with the route title (~500 m
 
 ## 5. Performance plan (initial JS ≤ 180 KB gzip)
 
-| In the initial chunk | Lazy (IntersectionObserver or interaction) |
-| --- | --- |
+| In the initial chunk                                                                                                                                 | Lazy (IntersectionObserver or interaction)                                                                                                                                                                                                     |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | react, react-dom, react-router, helmet-async, gsap + ScrollTrigger, zustand + immer, dayjs (+utc/tz), framer-motion `m` + LazyMotion shell, app code | Locomotive (right after hydrate, skipped for reduced motion), framer-motion features, Radix Dialog (palette, menu, shortcuts: on first open or idle), Three.js hero, Swiper (mobile only), D3 viz, p5, Tone, Sortable, Leaflet, RHF + Zod form |
 
 - Zod validates content in dev (on load) and at build (prerender). It never ships for content.
@@ -114,15 +121,15 @@ All other route changes get the charcoal panel wipe with the route title (~500 m
 
 ## 6. Risks and mitigations
 
-| Risk | Mitigation |
-| --- | --- |
-| Locomotive v5 + ScrollTrigger drift or double rAF | Drive Lenis from `gsap.ticker` manually and verify it on a scratch route before building sections |
-| Hydration mismatches (time, theme, storage) | Server-stable placeholders; client values set in effects; inline head script sets `data-theme` before paint |
-| Preloader hurting LCP | The hero is painted under the curtain from the first frame (LCP ignores occlusion). The curtain is theatre and never gates rendering. |
-| Budget blow-out (Framer, Radix, Swiper) | LazyMotion, lazy dialogs, Swiper only on narrow screens, and a visualizer report on every build |
-| Pinned sections + smooth scroll jank | CSS `position: sticky` for stacking, with ScrollTrigger only scrubbing transform and opacity |
-| Placeholder content shipped by accident | `[PLACEHOLDER]` and `[EDIT ME]` render as visible tags, and a dev-only banner counts them |
-| Third-party requests (tiles, fonts, APIs) | None at runtime. The map uses a local GeoJSON outline, no tiles. GitHub data is fetched at build time. |
+| Risk                                              | Mitigation                                                                                                                            |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Locomotive v5 + ScrollTrigger drift or double rAF | Drive Lenis from `gsap.ticker` manually and verify it on a scratch route before building sections                                     |
+| Hydration mismatches (time, theme, storage)       | Server-stable placeholders; client values set in effects; inline head script sets `data-theme` before paint                           |
+| Preloader hurting LCP                             | The hero is painted under the curtain from the first frame (LCP ignores occlusion). The curtain is theatre and never gates rendering. |
+| Budget blow-out (Framer, Radix, Swiper)           | LazyMotion, lazy dialogs, Swiper only on narrow screens, and a visualizer report on every build                                       |
+| Pinned sections + smooth scroll jank              | CSS `position: sticky` for stacking, with ScrollTrigger only scrubbing transform and opacity                                          |
+| Placeholder content shipped by accident           | `[PLACEHOLDER]` and `[EDIT ME]` render as visible tags, and a dev-only banner counts them                                             |
+| Third-party requests (tiles, fonts, APIs)         | None at runtime. The map uses a local GeoJSON outline, no tiles. GitHub data is fetched at build time.                                |
 
 ## 7. Order of work
 
