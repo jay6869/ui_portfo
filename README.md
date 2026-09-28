@@ -49,6 +49,9 @@ Requirements: Node ≥ 20.19. Built and tested on Node 26.
 | `node scripts/inp.mjs`                                       | Interaction latency under a 4× CPU throttle                                                                        |
 | `node scripts/shoot.mjs --name x --widths 375,768,1440,1920` | Screenshots for design review (dev server)                                                                         |
 
+> The e2e suite runs in **Chrome** (`--browser chrome`). Cypress's bundled Electron couldn't
+> render or capture screenshots on the GPU-less machine this was built on.
+>
 > **Running Cypress from a VS Code terminal?** VS Code sets `ELECTRON_RUN_AS_NODE=1`, which
 > makes Cypress fail with `bad option: --no-sandbox`. Use `env -u ELECTRON_RUN_AS_NODE npm run test:e2e`.
 

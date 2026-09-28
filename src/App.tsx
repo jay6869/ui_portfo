@@ -33,23 +33,6 @@ export function App() {
   const { display, phase, title, onCovered, onRevealed } = useRouteTransition()
   const goTo = useSectionNav()
   useGlobalKeys(goTo)
-  const paletteOpen = useUI((st) => st.paletteOpen)
-  const shortcutsOpen = useUI((st) => st.shortcutsOpen)
-  const [paletteLoaded, setPaletteLoaded] = useState(false)
-  const [shortcutsLoaded, setShortcutsLoaded] = useState(false)
-  useEffect(() => {
-    if (paletteOpen) setPaletteLoaded(true)
-  }, [paletteOpen])
-  useEffect(() => {
-    if (shortcutsOpen) setShortcutsLoaded(true)
-  }, [shortcutsOpen])
-  // Warm the dialog chunks when the browser is idle so ⌘K opens instantly
-  useEffect(() => {
-    const idle = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 2500))
-    idle(() => {
-      void import('@/components/chrome/CommandPalette')
-    })
-  }, [])
 
   return (
     <LazyMotion features={loadFeatures} strict>
@@ -94,16 +77,7 @@ export function App() {
         <SharedCover />
         <PageTransition phase={phase} title={title} onCovered={onCovered} onRevealed={onRevealed} />
         <Toaster />
-        {paletteLoaded ? (
-          <Suspense fallback={null}>
-            <CommandPalette />
-          </Suspense>
-        ) : null}
-        {shortcutsLoaded ? (
-          <Suspense fallback={null}>
-            <Shortcuts />
-          </Suspense>
-        ) : null}
+        <Dialogs />
         {DevBanner ? (
           <Suspense fallback={null}>
             <DevBanner />
@@ -113,5 +87,43 @@ export function App() {
         <Cursor />
       </MotionConfig>
     </LazyMotion>
+  )
+}
+
+/**
+ * Dialog state lives here, not in <App>: an App re-render would push new props into page
+ * sections that may still be hydrating (React #421 → the section re-renders on the client).
+ */
+function Dialogs() {
+  const paletteOpen = useUI((st) => st.paletteOpen)
+  const shortcutsOpen = useUI((st) => st.shortcutsOpen)
+  const [paletteLoaded, setPaletteLoaded] = useState(false)
+  const [shortcutsLoaded, setShortcutsLoaded] = useState(false)
+  useEffect(() => {
+    if (paletteOpen) setPaletteLoaded(true)
+  }, [paletteOpen])
+  useEffect(() => {
+    if (shortcutsOpen) setShortcutsLoaded(true)
+  }, [shortcutsOpen])
+  // Warm the palette chunk when the browser is idle so ⌘K opens instantly
+  useEffect(() => {
+    const idle = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 2500))
+    idle(() => {
+      void import('@/components/chrome/CommandPalette')
+    })
+  }, [])
+  return (
+    <>
+      {paletteLoaded ? (
+        <Suspense fallback={null}>
+          <CommandPalette />
+        </Suspense>
+      ) : null}
+      {shortcutsLoaded ? (
+        <Suspense fallback={null}>
+          <Shortcuts />
+        </Suspense>
+      ) : null}
+    </>
   )
 }

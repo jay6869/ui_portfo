@@ -202,6 +202,9 @@ em.accent {
 html {
   scrollbar-color: var(--bg-hover) var(--bg);
   scrollbar-width: thin;
+  /* Reserve the scrollbar's space: when smooth scrolling pauses (overflow: clip) the viewport
+     width must not change, or every fixed element would register a layout shift. */
+  scrollbar-gutter: stable;
 }
 
 /* ── Theme fallback cross-fade (when View Transitions are missing) ── */

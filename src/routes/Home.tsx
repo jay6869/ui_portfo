@@ -1,4 +1,4 @@
-import { Suspense, type ReactNode } from 'react'
+import { memo, Suspense, type ReactNode } from 'react'
 import { Hero } from '@/components/sections/Hero'
 import { StackMarquee } from '@/components/sections/StackMarquee'
 import { Work } from '@/components/sections/work/Work'
@@ -18,7 +18,8 @@ const Island = ({ children }: { children: ReactNode }) => (
   <Suspense fallback={null}>{children}</Suspense>
 )
 
-export default function Home() {
+/** Memoised: parent re-renders must never reach islands that are still hydrating. */
+export default memo(function Home() {
   return (
     <>
       <Seo />
@@ -46,4 +47,4 @@ export default function Home() {
       </Island>
     </>
   )
-}
+})

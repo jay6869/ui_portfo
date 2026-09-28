@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { memo, useRef } from 'react'
 import { site } from '@/content/site'
 import { gsap, useGSAP } from '@/engine/gsap'
 import { QUERIES, matches } from '@/engine/media'
@@ -9,7 +9,7 @@ import { LocalTime } from './LocalTime'
 import s from './Footer.module.css'
 
 /** Giant clipped name that rises into place, back-to-top, local time and the small print. */
-export function Footer() {
+export const Footer = memo(function Footer() {
   const root = useRef<HTMLElement>(null)
   const goTo = useSectionNav()
 
@@ -71,4 +71,4 @@ export function Footer() {
       </div>
     </footer>
   )
-}
+})
