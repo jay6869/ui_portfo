@@ -28,6 +28,9 @@ export default function P5Loom() {
 
     void import('p5').then(({ default: p5 }) => {
       if (disposed) return
+      // The Friendly Error System re-parses sketch source, which fails on minified code (and
+      // costs time). p5's own advice for production is to turn it off.
+      ;(p5 as unknown as { disableFriendlyErrors: boolean }).disableFriendlyErrors = true
       instance = new p5((p: P5) => {
         type Thread = { x: number; y: number; px: number; py: number; hue: 0 | 1; life: number }
         let threads: Thread[] = []

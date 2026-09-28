@@ -5,6 +5,7 @@ import { useEngine } from '@/engine/useEngine'
 import { useSectionNav } from '@/engine/nav'
 import { useGlobalKeys } from '@/engine/keys'
 import { useUI } from '@/stores/ui'
+import { site } from '@/content/site'
 import { useRouteTransition } from '@/engine/transition'
 import { useSoundLayer } from '@/lib/sound'
 import { SkipLink } from '@/components/chrome/SkipLink'
@@ -53,6 +54,20 @@ export function App() {
   return (
     <LazyMotion features={loadFeatures} strict>
       <MotionConfig reducedMotion="user">
+        <noscript>
+          <p className="noscript-note">
+            You&rsquo;re browsing without JavaScript. Everything important still works — the work,
+            the words, and the links: <a href={`mailto:${site.email}`}>{site.email}</a>
+            {site.socials.map((x) => (
+              <span key={x.label}>
+                {' · '}
+                <a href={x.href}>{x.label}</a>
+              </span>
+            ))}
+            {' · '}
+            <a href={site.cv.href}>CV</a>
+          </p>
+        </noscript>
         <SkipLink />
         <Header />
         <Hud routeKey={display.pathname} />

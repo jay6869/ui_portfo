@@ -1,4 +1,3 @@
-import groupBy from 'lodash-es/groupBy'
 import { projects } from '@/content/projects'
 import { stack } from '@/content/stack'
 import { stripTokens } from '@/lib/text'
@@ -14,12 +13,16 @@ export interface ToolInfo {
 
 /** Everything the visual shows is derived from content/projects.ts + content/stack.ts. */
 export function buildToolData(): ToolInfo[] {
-  const byTool = groupBy(
-    projects.flatMap((p) =>
+  // Plain reduce: lodash's groupBy drags ~20KB of iteratee machinery into the initial bundle
+  type Use = { tool: string; slug: string; title: string; stack: string[] }
+  const byTool = projects
+    .flatMap((p) =>
       p.stack.map((tool) => ({ tool, slug: p.slug, title: stripTokens(p.title), stack: p.stack })),
-    ),
-    'tool',
-  )
+    )
+    .reduce<Record<string, Use[]>>((acc, u) => {
+      ;(acc[u.tool] ??= []).push(u)
+      return acc
+    }, {})
   return stack.layers.flatMap((layer, layerIndex) =>
     layer.tools.map((name) => {
       const uses = byTool[name] ?? []

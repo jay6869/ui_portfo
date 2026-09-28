@@ -22,6 +22,10 @@
           else if (matchMedia('(prefers-color-scheme: light)').matches) theme = 'paper'
         } catch (e) {}
         d.setAttribute('data-theme', theme)
+        if (theme === 'paper') {
+          var m = document.querySelector('meta[name="theme-color"]')
+          if (m) m.setAttribute('content', '#efeae0')
+        }
         var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
         try {
           if (!sessionStorage.getItem('jg:seen')) d.setAttribute('data-preloader', reduce ? 'short' : 'full')

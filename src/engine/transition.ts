@@ -1,4 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+
+// useLayoutEffect on the client, useEffect during prerender (no warning, same behaviour)
+const useIsoLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect
 import { useLocation, type Location } from 'react-router-dom'
 import { scroller } from './scroll'
 import { ScrollTrigger } from './gsap'
@@ -91,7 +94,7 @@ export function useRouteTransition() {
   }, [phase, onCovered, onRevealed])
 
   // After the new route has mounted: scroll position, focus, trigger refresh.
-  useLayoutEffect(() => {
+  useIsoLayoutEffect(() => {
     const from = prevPath.current
     prevPath.current = display.pathname
     if (from === display.pathname && !display.hash) return

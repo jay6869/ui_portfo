@@ -245,3 +245,19 @@ html.has-cursor [contenteditable] {
     scroll-behavior: auto !important;
   }
 }
+
+/* ── No-JS note ────────────────────────────────────────────────── */
+.noscript-note {
+  position: relative;
+  z-index: var(--z-header);
+  margin: calc(var(--header-h) + var(--space-s)) var(--margin) 0;
+  padding: var(--space-s) var(--space-m);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-m);
+  font-size: var(--step--1);
+  color: var(--fg-dim);
+}
+.noscript-note a {
+  color: var(--accent-ink);
+  text-decoration: underline;
+}

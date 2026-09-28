@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "vite",
     "build": "npm run typecheck && npm run lint && npm run build:only",
-    "build:only": "node scripts/github.mjs && vite build && vite build --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.mjs",
+    "build:only": "node scripts/github.mjs && vite build && vite build --ssr src/entry-server.tsx --outDir dist-ssr && NODE_ENV=production node scripts/prerender.mjs",
     "preview": "vite preview --port 4173 --strictPort",
     "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.node.json && tsc -p cypress/tsconfig.json",
     "lint": "eslint . --max-warnings 0",
@@ -25,6 +25,9 @@
     "test:e2e": "start-server-and-test preview http://localhost:4173 cy:run"
   },
   "dependencies": {
+    "@fontsource-variable/hanken-grotesk": "^5.3.0",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "@fontsource/instrument-serif": "^5.3.0",
     "@gsap/react": "^2.1.2",
     "@hookform/resolvers": "^5.9.1",
     "@radix-ui/react-dialog": "^1.1.23",
@@ -49,14 +52,13 @@
     "three": "^0.186.1",
     "tone": "^15.1.22",
     "zod": "^4.6.5",
-    "zustand": "^5.0.15",
-    "@fontsource/instrument-serif": "^5.3.0",
-    "@fontsource-variable/hanken-grotesk": "^5.3.0",
-    "@fontsource-variable/jetbrains-mono": "^5.3.0"
+    "zustand": "^5.0.15"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
     "@eslint/js": "^9.39.0",
+    "@fontsource/hanken-grotesk": "^5.3.0",
+    "@fontsource/jetbrains-mono": "^5.3.0",
     "@resvg/resvg-js": "^2.6.2",
     "@storybook/react-vite": "^10.6.0",
     "@types/d3": "^7.4.3",
