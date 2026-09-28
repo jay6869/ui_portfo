@@ -192,6 +192,8 @@ export default function CommandPalette() {
               </p>
               <ul role="group" aria-label={g} className={s.groupList}>
                 {items.map(({ c, i }) => (
+                  // Keyboard is handled by the combobox input (aria-activedescendant pattern)
+                  // eslint-disable-next-line jsx-a11y/click-events-have-key-events
                   <li
                     key={c.id}
                     id={optionId(i)}
