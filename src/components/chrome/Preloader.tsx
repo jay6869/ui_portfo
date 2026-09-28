@@ -56,7 +56,12 @@ export function Preloader() {
 
     const count = { v: 0 }
     const tl = gsap.timeline({ onComplete: finish })
-    tl.fromTo(chars, { yPercent: 110, y: 0 }, { yPercent: 0, y: 0, duration: 0.8, stagger: 0.035, ease: 'workshop' }, 0.1)
+    tl.fromTo(
+      chars,
+      { yPercent: 110, y: 0 },
+      { yPercent: 0, y: 0, duration: 0.8, stagger: 0.035, ease: 'workshop' },
+      0.1,
+    )
       .to(
         count,
         {
@@ -64,7 +69,8 @@ export function Preloader() {
           duration: 1.25,
           ease: 'power2.inOut',
           onUpdate: () => {
-            if (counter.current) counter.current.textContent = String(Math.round(count.v)).padStart(3, '0')
+            if (counter.current)
+              counter.current.textContent = String(Math.round(count.v)).padStart(3, '0')
           },
         },
         0,
