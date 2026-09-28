@@ -1,0 +1,313 @@
+.section {
+  position: relative;
+  padding-top: var(--space-section);
+  padding-bottom: var(--space-xl);
+  outline: none;
+}
+.rail {
+  display: flex;
+  align-items: center;
+  gap: var(--space-s);
+  color: var(--fg-dim);
+  margin-bottom: var(--space-l);
+}
+.railLine {
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+.headline {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(3.6rem, 14.5vw, 17rem);
+  line-height: 0.86;
+  letter-spacing: -0.035em;
+}
+
+.body {
+  row-gap: var(--space-xl);
+  margin-top: var(--space-xl);
+  align-items: start;
+}
+.intro {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: var(--space-l);
+  justify-items: start;
+}
+.lede {
+  max-width: 34ch;
+  font-size: var(--step-1);
+  line-height: 1.45;
+}
+.email {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.4em 1em;
+  text-align: left;
+}
+.emailText {
+  font-family: var(--font-display);
+  font-size: var(--step-2);
+  line-height: 1.1;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0% 1px no-repeat;
+  transition: background-size 0.6s var(--ease-snap);
+  word-break: break-all;
+}
+.email:is(:hover, :focus-visible) .emailText {
+  background-size: 100% 1px;
+}
+.emailHint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  color: var(--accent-ink);
+}
+.ctaWrap {
+  margin-top: var(--space-s);
+}
+.cta {
+  display: grid;
+  place-items: center;
+  width: clamp(150px, 16vw, 200px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--fg-on-accent);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: var(--tracking-mono);
+  text-transform: uppercase;
+  transition: transform 0.6s var(--ease-snap);
+}
+.cta:is(:hover, :focus-visible) {
+  transform: scale(1.06);
+}
+.ctaInner {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+/* ── Form ─────────────────────────────────────── */
+.formCol {
+  grid-column: 1 / -1;
+}
+.formWrap {
+  position: relative;
+}
+.form {
+  display: grid;
+  gap: var(--space-m);
+}
+.field {
+  display: grid;
+  gap: 6px;
+}
+.label {
+  color: var(--fg-dim);
+}
+.input {
+  width: 100%;
+  padding: 0.7em 0 0.6em;
+  border: 0;
+  border-bottom: 1px solid var(--line-strong);
+  border-radius: 0;
+  background: transparent;
+  font-size: var(--step-1);
+  color: var(--fg);
+  transition: border-color 0.3s var(--ease-out);
+}
+.input:focus {
+  outline: none;
+  border-bottom-color: var(--accent-ink);
+}
+.input:focus-visible {
+  outline: none;
+  box-shadow: 0 1px 0 0 var(--accent-ink);
+}
+.textarea {
+  resize: vertical;
+  min-height: 7.5em;
+  line-height: 1.5;
+}
+.field[data-invalid='true'] .input {
+  border-bottom-color: var(--accent-ink);
+}
+.error {
+  min-height: 1.3em;
+  font-size: var(--step--1);
+  color: var(--accent-ink);
+}
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+.submitRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-s) var(--space-m);
+  padding-top: var(--space-2xs);
+}
+.submit {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  height: 52px;
+  padding-inline: 1.7em;
+  border: 1px solid var(--fg);
+  border-radius: var(--radius-pill);
+  font-size: var(--step--2);
+  font-weight: 500;
+  transition:
+    background-color 0.4s var(--ease-snap),
+    color 0.4s var(--ease-snap);
+}
+.submit:is(:hover, :focus-visible) {
+  background: var(--fg);
+  color: var(--bg);
+}
+.submit[disabled] {
+  opacity: 0.7;
+}
+.formNote {
+  font-size: var(--step--1);
+  max-width: 36ch;
+}
+.spinner {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1.5px solid currentColor;
+  border-right-color: transparent;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.done {
+  display: grid;
+  gap: var(--space-m);
+  justify-items: start;
+  padding: var(--space-l) 0;
+}
+.check {
+  width: 64px;
+  height: 64px;
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.check circle {
+  stroke-dasharray: 151;
+  stroke-dashoffset: 151;
+  animation: draw 0.9s var(--ease-out) forwards;
+}
+.check path {
+  stroke-width: 2;
+  stroke-dasharray: 36;
+  stroke-dashoffset: 36;
+  animation: draw 0.5s var(--ease-out) 0.55s forwards;
+}
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.doneTitle {
+  max-width: 28ch;
+  font-family: var(--font-display);
+  font-size: var(--step-2);
+  line-height: 1.15;
+}
+.again {
+  padding-block: 8px;
+  color: var(--accent-ink);
+}
+
+/* ── Socials ─────────────────────────────────── */
+.socials {
+  margin: var(--space-2xl) 0 0;
+  border-top: var(--hairline);
+}
+.socials li {
+  border-bottom: var(--hairline);
+}
+.social {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: var(--space-2xs) var(--space-m);
+  padding: var(--space-m) var(--margin);
+}
+.socialLabel {
+  font-family: var(--font-display);
+  font-size: var(--step-4);
+  line-height: 1;
+  letter-spacing: var(--tracking-display);
+}
+.socialHandle {
+  grid-row: 2;
+  text-transform: none;
+}
+.socialArrow {
+  grid-row: 1 / span 2;
+  grid-column: 2;
+  color: var(--fg-dim);
+  transition:
+    transform 0.6s var(--ease-snap),
+    color 0.3s;
+}
+.social:is(:hover, :focus-visible) .socialArrow {
+  transform: translate(4px, -4px) scale(1.15);
+  color: var(--accent);
+}
+.social:is(:hover, :focus-visible) .socialLabel {
+  font-style: italic;
+  color: var(--accent-ink);
+}
+
+@media (min-width: 768px) {
+  .social {
+    grid-template-columns: 1fr auto auto;
+  }
+  .socialLabel {
+    grid-column: 1;
+  }
+  .socialHandle {
+    grid-row: 1;
+    grid-column: 2;
+  }
+  .socialArrow {
+    grid-row: 1;
+    grid-column: 3;
+  }
+}
+@media (min-width: 1024px) {
+  .intro {
+    grid-column: 1 / span 5;
+    position: sticky;
+    top: calc(var(--header-h) + var(--space-l));
+  }
+  .formCol {
+    grid-column: 7 / -1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .check circle,
+  .check path {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}

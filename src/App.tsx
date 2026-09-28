@@ -14,6 +14,7 @@ import Home from '@/routes/Home'
 import CaseStudy from '@/routes/CaseStudy'
 import NotFound from '@/routes/NotFound'
 import { SharedCover } from '@/components/chrome/SharedCover'
+import { Footer } from '@/components/chrome/Footer'
 
 const loadFeatures = () => import('@/engine/motion-features').then((m) => m.default)
 const EngineScratch = import.meta.env.DEV ? lazy(() => import('@/routes/EngineScratch')) : null
@@ -46,6 +47,7 @@ export function App() {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
+        <Footer />
         <SharedCover />
         <PageTransition phase={phase} title={title} onCovered={onCovered} onRevealed={onRevealed} />
         <Toaster />
