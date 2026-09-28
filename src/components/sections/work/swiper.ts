@@ -20,6 +20,8 @@ export function initSwiper(el: HTMLElement, onProgress: (index: number) => void)
       enabled: true,
       containerMessage: 'Projects',
       slideLabelMessage: 'Project {{index}} of {{slidesLength}}',
+      // Our markup is ul/li; Swiper's default role="group" would break list semantics
+      slideRole: 'listitem',
     },
     on: {
       slideChange: (sw) => onProgress(sw.activeIndex),

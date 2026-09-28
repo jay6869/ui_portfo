@@ -10,7 +10,7 @@ interface Props {
   duration?: number
   /** How strongly scroll velocity speeds the band up. */
   velocityFactor?: number
-  /** Accessible label for the list. */
+  /** Accessible label for the list (the surrounding section provides the landmark). */
   label: string
   className?: string
   separator?: ReactNode
@@ -109,7 +109,7 @@ export function Marquee({
   )
 
   const copy = (hidden: boolean) => (
-    <ul className={s.copy} aria-hidden={hidden || undefined} role="list">
+    <ul className={s.copy} aria-hidden={hidden || undefined} aria-label={hidden ? undefined : label} role="list">
       {items.map((item, i) => (
         <li key={i} className={s.item}>
           {item}
@@ -122,7 +122,7 @@ export function Marquee({
   )
 
   return (
-    <div ref={root} className={cx(s.marquee, className)} role="region" aria-label={label}>
+    <div ref={root} className={cx(s.marquee, className)}>
       <div ref={track} className={s.track}>
         {copy(false)}
         {copy(true)}

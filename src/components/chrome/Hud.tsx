@@ -41,8 +41,9 @@ export function Hud({ routeKey }: { routeKey: string }) {
   }, [routeKey])
 
   return (
-    <div className={s.hud} data-idle={section.index === '00'}>
-      <p className={`${s.section} mono`} aria-live="off">
+    // Decorative: it mirrors the section headings, which screen readers already get in context
+    <div className={s.hud} data-idle={section.index === '00'} aria-hidden="true">
+      <p className={`${s.section} mono`}>
         <span key={section.index} className={s.swap}>
           <span className={s.index}>{section.index}</span>
           <span className={s.sep} aria-hidden="true" />

@@ -61,12 +61,8 @@ export function Contact() {
       <div className={`${s.body} grid`}>
         <div className={s.intro}>
           <p className={s.lede}>{site.contact.lede}</p>
-          <button
-            type="button"
-            className={s.email}
-            onClick={copy}
-            aria-label={`Copy email address ${site.email}`}
-          >
+          {/* Name = visible text ("…@gmail.com Copy email address"), no overriding aria-label */}
+          <button type="button" className={s.email} onClick={copy}>
             <span className={s.emailText}>{site.email}</span>
             <span className={`${s.emailHint} mono`}>
               <CopyIcon size={14} /> Copy<span className="sr-only"> email address</span>

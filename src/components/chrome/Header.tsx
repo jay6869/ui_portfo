@@ -54,16 +54,11 @@ export function Header() {
 
   return (
     <header ref={ref} className={s.header} data-hidden="false" data-scrolled="false">
-      <Link
-        to="/"
-        className={s.mark}
-        aria-label={`${site.name}, home`}
-        onClick={(e) => goTo('top', e)}
-      >
-        <span aria-hidden="true">
-          <em>{site.monogram.slice(0, 1)}</em>
-          {site.monogram.slice(1)}
-        </span>
+      {/* Accessible name starts with the visible "JG" (label-in-name, for voice control) */}
+      <Link to="/" className={s.mark} onClick={(e) => goTo('top', e)}>
+        <em>{site.monogram.slice(0, 1)}</em>
+        {site.monogram.slice(1)}
+        <span className="sr-only"> — {site.name}, home</span>
       </Link>
 
       <p className={`${s.clock} mono`}>
