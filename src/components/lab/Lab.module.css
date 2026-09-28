@@ -1,0 +1,355 @@
+.section {
+  position: relative;
+  padding-top: var(--space-section);
+  padding-bottom: var(--space-2xl);
+  outline: none;
+}
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--gutter);
+  margin: 0;
+  padding-inline: var(--margin);
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  background: var(--bg-sunken);
+  overflow: hidden;
+}
+.stage {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: var(--art-1);
+  overflow: hidden;
+  border-bottom: 1px solid var(--line);
+}
+.meta {
+  display: grid;
+  gap: var(--space-s);
+  padding: var(--space-m);
+}
+.metaTop {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: baseline;
+  gap: var(--space-s);
+}
+.title {
+  font-family: var(--font-display);
+  font-size: var(--step-2);
+  line-height: 1;
+  letter-spacing: var(--tracking-display);
+}
+.action {
+  padding: 8px 0;
+  color: var(--accent-ink);
+}
+.actionStatic {
+  color: var(--fg-dim);
+}
+.blurb {
+  max-width: 46ch;
+  color: var(--fg-dim);
+  font-size: var(--step--1);
+}
+.metaBottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-s);
+}
+.tags {
+  display: flex;
+  gap: 6px;
+  margin: 0;
+}
+.source {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding-block: 6px;
+}
+
+/* ── Loom ───────────────────────────────────────── */
+.canvasHost {
+  position: absolute;
+  inset: 0;
+}
+.canvasHost canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+.poster {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+.poster svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.posterNote {
+  position: relative;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--bg);
+}
+
+/* ── Specimen ───────────────────────────────────── */
+.specimen {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: var(--space-m);
+  padding: var(--space-m);
+}
+.tiles {
+  display: flex;
+  gap: clamp(4px, 1vw, 10px);
+  margin: 0;
+}
+.tileItem {
+  list-style: none;
+}
+.tile {
+  display: grid;
+  place-items: center;
+  width: clamp(40px, 9vw, 72px);
+  aspect-ratio: 3 / 4;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-s);
+  background: var(--bg-raised);
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 5vw, 3.3rem);
+  line-height: 1;
+  cursor: grab;
+  touch-action: none;
+  transition:
+    border-color 0.3s,
+    transform 0.4s var(--ease-snap);
+}
+.tile[data-italic='true'] {
+  font-style: italic;
+}
+.tile:is(:hover, :focus-visible) {
+  border-color: var(--accent-ink);
+}
+.chosen .tile {
+  transform: scale(1.06) rotate(-3deg);
+  border-color: var(--accent);
+}
+.ghost {
+  opacity: 0.25;
+}
+.specimenNote {
+  color: var(--fg-dim);
+  text-align: center;
+}
+
+/* ── Keys ───────────────────────────────────────── */
+.keys {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  padding: var(--space-m);
+  gap: var(--space-s);
+}
+.keyRow {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 6px;
+  align-items: end;
+}
+.key {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 4px;
+}
+.keyBar {
+  width: 100%;
+  height: var(--h);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-s);
+  background: var(--bg-raised);
+  transform-origin: bottom;
+  transition:
+    background-color 0.5s var(--ease-out),
+    transform 0.5s var(--ease-snap),
+    border-color 0.3s;
+}
+.key:is(:hover, :focus-visible) .keyBar {
+  border-color: var(--accent-ink);
+}
+.key[data-down='true'] .keyBar {
+  background: var(--accent);
+  transform: scaleY(0.94);
+  transition-duration: 0.08s;
+}
+.keyLabel {
+  color: var(--fg-dim);
+}
+.keysNote {
+  text-align: center;
+}
+
+/* ── Tape ───────────────────────────────────────── */
+@property --cm {
+  syntax: '<integer>';
+  initial-value: 0;
+  inherits: true;
+}
+.tape {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-rows: 1fr auto auto;
+  timeline-scope: --tape;
+}
+.readout {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  align-self: center;
+  gap: 0.4em;
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 8vw, 5.5rem);
+  line-height: 1;
+}
+.readoutNum::before {
+  content: '0';
+}
+.needle {
+  position: absolute;
+  left: 50%;
+  bottom: 22px;
+  width: 1px;
+  height: 92px;
+  background: var(--accent);
+  z-index: 1;
+  pointer-events: none;
+}
+.ruler {
+  overflow-x: auto;
+  scrollbar-width: none;
+  scroll-timeline: --tape inline;
+  cursor: ew-resize;
+}
+.ruler::-webkit-scrollbar {
+  display: none;
+}
+.ticks {
+  display: flex;
+  align-items: flex-end;
+  height: 96px;
+  margin: 0;
+  /* half the viewport on each side so 0 and 100 can reach the needle */
+  padding-inline: calc(50% - 1px);
+  width: max-content;
+}
+.tick {
+  position: relative;
+  flex: 0 0 14px;
+  height: 100%;
+  list-style: none;
+}
+.tick::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 1px;
+  height: 18px;
+  background: var(--fg-dim);
+  transform-origin: bottom;
+}
+.tick[data-mid='true']::after {
+  height: 30px;
+}
+.tick[data-major='true']::after {
+  height: 46px;
+  background: var(--fg);
+}
+.tick:last-child {
+  flex-basis: 1px;
+}
+.tickLabel {
+  position: absolute;
+  left: 0;
+  bottom: 52px;
+  transform: translateX(-50%);
+  color: var(--fg-dim);
+}
+.tapeNote {
+  padding: 0 var(--space-m) var(--space-s);
+  text-align: center;
+  min-height: 1.5em;
+}
+.unsupported {
+  display: none;
+}
+
+@supports (animation-timeline: scroll()) {
+  .tape {
+    animation: count linear both;
+    animation-timeline: --tape;
+  }
+  .readoutNum::before {
+    counter-reset: cm var(--cm);
+    content: counter(cm);
+  }
+  .tick::after {
+    animation: swell linear both;
+    animation-timeline: view(inline);
+  }
+  @keyframes count {
+    to {
+      --cm: 100;
+    }
+  }
+  @keyframes swell {
+    0%,
+    30%,
+    70%,
+    100% {
+      transform: scaleY(1);
+    }
+    50% {
+      transform: scaleY(1.9);
+      background: var(--accent);
+    }
+  }
+}
+@supports not (animation-timeline: scroll()) {
+  .unsupported {
+    display: inline;
+  }
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1024px) {
+  .card:nth-child(even) {
+    transform: translateY(var(--space-xl));
+  }
+  .grid {
+    padding-bottom: var(--space-xl);
+  }
+}

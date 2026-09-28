@@ -22,7 +22,7 @@ const monthYear = (iso: string) => {
  */
 export function StackViz() {
   const h = site.sections.stack!
-  const tools = useMemo(buildToolData, [])
+  const tools = useMemo(() => buildToolData(), [])
   const [hovered, setHovered] = useState<string | null>(null)
   const [pinned, setPinned] = useState<string | null>(null)
   const active = hovered ?? pinned
