@@ -15,6 +15,7 @@ import CaseStudy from '@/routes/CaseStudy'
 import NotFound from '@/routes/NotFound'
 import { SharedCover } from '@/components/chrome/SharedCover'
 import { Footer } from '@/components/chrome/Footer'
+import { Preloader } from '@/components/chrome/Preloader'
 
 const loadFeatures = () => import('@/engine/motion-features').then((m) => m.default)
 const EngineScratch = import.meta.env.DEV ? lazy(() => import('@/routes/EngineScratch')) : null
@@ -51,6 +52,7 @@ export function App() {
         <SharedCover />
         <PageTransition phase={phase} title={title} onCovered={onCovered} onRevealed={onRevealed} />
         <Toaster />
+        <Preloader />
         <Cursor />
       </MotionConfig>
     </LazyMotion>
