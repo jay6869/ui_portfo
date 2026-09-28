@@ -35,7 +35,14 @@ export function Marquee({
   useGSAP(
     () => {
       if (matches(QUERIES.reducedMotion) || !track.current || !root.current) return
-      const loop = gsap.to(track.current, { xPercent: -50, duration, ease: 'none', repeat: -1 })
+      // Starts paused: it only runs while the band is on screen (onToggle below)
+      const loop = gsap.to(track.current, {
+        xPercent: -50,
+        duration,
+        ease: 'none',
+        repeat: -1,
+        paused: true,
+      })
       const skew = gsap.quickTo(track.current, 'skewX', { duration: 0.5, ease: 'power3.out' })
       let direction = 1
       let hover = false
@@ -68,6 +75,7 @@ export function Marquee({
           }
         },
       })
+      if (st.isActive) loop.resume()
       const enter = () => {
         hover = true
         gsap.to(speed, {

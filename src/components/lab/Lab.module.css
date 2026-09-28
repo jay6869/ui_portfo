@@ -257,15 +257,26 @@
   align-items: flex-end;
   height: 96px;
   margin: 0;
-  /* half the viewport on each side so 0 and 100 can reach the needle */
+  /* half the scroller on each side so 0 and 100 can reach the needle */
   padding-inline: calc(50% - 1px);
   width: max-content;
+  list-style: none;
+  /* 1cm = 14px: minor ticks every 14px, a taller one every 70px (5cm) */
+  background:
+    repeating-linear-gradient(to right, var(--fg-dim) 0 1px, transparent 1px 70px) 0 100% / 100%
+      30px no-repeat,
+    repeating-linear-gradient(to right, var(--fg-dim) 0 1px, transparent 1px 14px) 0 100% / 100%
+      18px no-repeat;
+  background-origin: content-box;
+  background-clip: content-box;
 }
 .tick {
   position: relative;
-  flex: 0 0 14px;
+  flex: 0 0 140px;
   height: 100%;
-  list-style: none;
+}
+.tick:last-child {
+  flex-basis: 1px;
 }
 .tick::after {
   content: '';
@@ -273,19 +284,9 @@
   left: 0;
   bottom: 0;
   width: 1px;
-  height: 18px;
-  background: var(--fg-dim);
-  transform-origin: bottom;
-}
-.tick[data-mid='true']::after {
-  height: 30px;
-}
-.tick[data-major='true']::after {
   height: 46px;
   background: var(--fg);
-}
-.tick:last-child {
-  flex-basis: 1px;
+  transform-origin: bottom;
 }
 .tickLabel {
   position: absolute;
@@ -315,6 +316,7 @@
   .tick::after {
     animation: swell linear both;
     animation-timeline: view(inline);
+    animation-range: cover 35% cover 65%;
   }
   @keyframes count {
     to {
@@ -323,13 +325,11 @@
   }
   @keyframes swell {
     0%,
-    30%,
-    70%,
     100% {
       transform: scaleY(1);
     }
     50% {
-      transform: scaleY(1.9);
+      transform: scaleY(1.7);
       background: var(--accent);
     }
   }

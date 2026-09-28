@@ -69,7 +69,7 @@ export function Contact() {
           >
             <span className={s.emailText}>{site.email}</span>
             <span className={`${s.emailHint} mono`}>
-              <CopyIcon size={14} /> Copy
+              <CopyIcon size={14} /> Copy<span className="sr-only"> email address</span>
             </span>
           </button>
           <Magnetic strength={0.4} padding={40} className={s.ctaWrap}>

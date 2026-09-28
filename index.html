@@ -28,8 +28,18 @@
         }
         var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
         try {
-          if (!sessionStorage.getItem('jg:seen')) d.setAttribute('data-preloader', reduce ? 'short' : 'full')
-          else d.setAttribute('data-intro', 'return')
+          if (!sessionStorage.getItem('jg:seen')) {
+            d.setAttribute('data-preloader', reduce ? 'short' : 'full')
+            /* The preloader is CSS-driven from first paint; any key/click skips it, even pre-hydration. */
+            var skip = function () {
+              if (d.hasAttribute('data-preloader')) d.classList.add('pl-skip')
+              window.__jgSkipAt = performance.now()
+              removeEventListener('keydown', skip)
+              removeEventListener('pointerdown', skip)
+            }
+            addEventListener('keydown', skip)
+            addEventListener('pointerdown', skip)
+          } else d.setAttribute('data-intro', 'return')
         } catch (e) {}
         /* If the app never hydrates (script blocked, network died), show the static page. */
         setTimeout(function () {

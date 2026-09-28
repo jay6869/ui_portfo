@@ -88,7 +88,9 @@ export function App() {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
-        <Footer />
+        <Suspense fallback={null}>
+          <Footer />
+        </Suspense>
         <SharedCover />
         <PageTransition phase={phase} title={title} onCovered={onCovered} onRevealed={onRevealed} />
         <Toaster />

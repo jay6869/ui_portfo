@@ -5,7 +5,7 @@ import s from './TextRoll.module.css'
 interface Props {
   text: string
   className?: string
-  /** Stagger per character (default) or roll the whole label as one piece. */
+  /** Roll the whole label (default, light DOM) or stagger per character (hero nav/CTAs). */
   mode?: 'chars' | 'whole'
 }
 
@@ -14,7 +14,7 @@ interface Props {
  * Triggered by the nearest interactive ancestor (a, button, label) — no JS.
  * Screen readers get the plain text once; the animated copies are aria-hidden.
  */
-export function TextRoll({ text, className, mode = 'chars' }: Props) {
+export function TextRoll({ text, className, mode = 'whole' }: Props) {
   const pieces = mode === 'chars' ? Array.from(text) : [text]
   return (
     <span className={cx(s.roll, className)}>

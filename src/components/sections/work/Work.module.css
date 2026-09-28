@@ -112,6 +112,7 @@
 }
 .cardCover {
   aspect-ratio: var(--cover-aspect);
+  background: var(--art-1);
   border-radius: var(--radius-s);
   overflow: hidden;
   transition: transform 0.6s var(--ease-snap);

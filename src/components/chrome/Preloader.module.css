@@ -1,10 +1,22 @@
+/*
+ * Preloader — CSS only, starts at first paint. Timeline (full):
+ *   0.00–1.00s  counter 000→100, status lines at 0.10 / 0.40 / 0.75, name letters rise
+ *   1.00–1.15s  content lifts away
+ *   1.10–1.90s  the curtain splits: two panels lift, staggered (see PRELOADER in the .tsx)
+ */
+@property --pl-n {
+  syntax: '<integer>';
+  initial-value: 0;
+  inherits: false;
+}
+
 .preloader {
   display: none;
   position: fixed;
   inset: 0;
   z-index: var(--z-preloader);
   color: var(--bone);
-  cursor: progress;
+  pointer-events: none;
 }
 :global(html[data-preloader]) .preloader {
   display: block;
@@ -12,20 +24,31 @@
 .panels {
   position: absolute;
   inset: 0;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  contain: strict;
 }
 .panel {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 50.1%;
   background: var(--ink-950);
-  will-change: transform;
+  animation: lift 0.72s var(--ease-inout) 1.1s both;
+}
+.panel:last-child {
+  left: 50%;
+  width: 50%;
+  animation-delay: 1.18s;
 }
 .content {
   position: absolute;
   inset: 0;
+  contain: layout;
   display: grid;
   grid-template-rows: 1fr auto;
   grid-template-columns: 1fr auto;
   padding: var(--margin);
+  animation: away 0.35s cubic-bezier(0.5, 0, 0.75, 0) 1s both;
 }
 .name {
   grid-column: 1 / -1;
@@ -49,7 +72,8 @@
 }
 .char {
   display: inline-block;
-  transform: translateY(110%);
+  animation: rise 0.8s var(--ease-out) both;
+  animation-delay: calc(0.05s + var(--i) * 0.035s);
 }
 .name .mask:first-child .char {
   font-style: italic;
@@ -65,7 +89,16 @@
   color: var(--bone-dim);
 }
 .lines li {
-  opacity: 0;
+  animation: line-in 0.35s var(--ease-out) both;
+}
+.lines li:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.lines li:nth-child(2) {
+  animation-delay: 0.4s;
+}
+.lines li:nth-child(3) {
+  animation-delay: 0.75s;
 }
 .lineIndex {
   color: var(--clay);
@@ -73,11 +106,30 @@
 }
 .counter {
   align-self: end;
+  /* fixed box: the serif has proportional figures, so a changing number must not move layout */
+  width: 3.4ch;
+  text-align: right;
+  white-space: nowrap;
   font-family: var(--font-display);
   font-size: clamp(3.5rem, 11vw, 9rem);
   line-height: 0.8;
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.02em;
+}
+.num::after {
+  content: '100';
+}
+@supports (animation-timeline: auto) or (width: round(down, 10px, 3px)) {
+  .num {
+    --h: round(down, var(--pl-n) / 100, 1);
+    --t: round(down, mod(var(--pl-n), 100) / 10, 1);
+    --u: mod(var(--pl-n), 10);
+    counter-reset: h var(--h) t var(--t) u var(--u);
+    animation: count 1s cubic-bezier(0.45, 0, 0.55, 1) both;
+  }
+  .num::after {
+    content: counter(h) counter(t) counter(u);
+  }
 }
 .skip {
   position: absolute;
@@ -85,6 +137,62 @@
   right: var(--margin);
   color: var(--bone-dim);
   opacity: 0.6;
+}
+
+/* Skipped (any key / click, handled by the head script): lift now */
+:global(html.pl-skip) .content {
+  animation: away 0.25s ease-in both;
+}
+:global(html.pl-skip) .panel {
+  animation: lift 0.55s var(--ease-inout) both;
+}
+:global(html.pl-skip) .panel:last-child {
+  animation-delay: 0.06s;
+}
+
+/* Reduced motion: a quick fade, under 600ms */
+:global(html[data-preloader='short']) .preloader {
+  animation: fade 0.3s linear 0.15s both;
+}
+:global(html[data-preloader='short']) .panel,
+:global(html[data-preloader='short']) .content,
+:global(html[data-preloader='short']) .char,
+:global(html[data-preloader='short']) .lines li,
+:global(html[data-preloader='short']) .num {
+  animation: none;
+}
+
+@keyframes lift {
+  to {
+    transform: translateY(-100%);
+  }
+}
+@keyframes away {
+  to {
+    transform: translateY(-4vh);
+    opacity: 0;
+  }
+}
+@keyframes rise {
+  from {
+    transform: translateY(110%);
+  }
+}
+@keyframes line-in {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+}
+@keyframes count {
+  to {
+    --pl-n: 100;
+  }
+}
+@keyframes fade {
+  to {
+    opacity: 0;
+  }
 }
 @media (hover: none) {
   .skip {

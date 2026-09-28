@@ -10,7 +10,7 @@
     "dev": "vite",
     "build": "npm run typecheck && npm run lint && npm run build:only",
     "build:only": "node scripts/github.mjs && vite build && vite build --ssr src/entry-server.tsx --outDir dist-ssr && NODE_ENV=production node scripts/prerender.mjs",
-    "preview": "vite preview --port 4173 --strictPort",
+    "preview": "node scripts/serve.mjs --port 4173",
     "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.node.json && tsc -p cypress/tsconfig.json",
     "lint": "eslint . --max-warnings 0",
     "format": "prettier --write .",

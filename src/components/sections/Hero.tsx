@@ -60,7 +60,15 @@ export function Hero() {
         )
       }
 
-      const onIntro = () => play(0)
+      const onIntro = (e: Event) => {
+        // Curtain already open by the time JS arrived (slow network): don't re-animate what
+        // the visitor can already see.
+        if ((e as CustomEvent<{ late?: boolean }>).detail?.late) {
+          nameRef.current?.classList.remove(s.masked!)
+          return
+        }
+        play(0)
+      }
       if (html.dataset.preloader) {
         // First visit: the preloader tells us when the curtain starts to open.
         window.addEventListener(HERO_INTRO_EVENT, onIntro, { once: true })
@@ -120,10 +128,14 @@ export function Hero() {
 
   // ── WebGL blob: after first paint, only where it'll run well ──
   useEffect(() => {
-    if (matches(QUERIES.reducedMotion) || isLowPower() || !hasWebGL()) return
+    if (matches(QUERIES.reducedMotion) || isLowPower()) return
     const idle = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 400))
     const cancel = window.cancelIdleCallback ?? window.clearTimeout
-    const id = idle(() => setBlob(true), { timeout: 2500 })
+    // After load + idle (and after the preloader on first visits): never competes with LCP/TTI.
+    // The WebGL probe itself creates a context, so it waits for idle too.
+    const id = idle(() => hasWebGL() && setBlob(true), {
+      timeout: document.documentElement.dataset.preloader ? 4000 : 2500,
+    })
     return () => cancel(id)
   }, [])
 

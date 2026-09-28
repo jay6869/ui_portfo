@@ -77,8 +77,14 @@ export default function HeroBlob() {
 
     let last = performance.now()
     let visible = true
+    // Watchdog: if the first frames are slow (weak GPU, thermal throttling), give up gracefully
+    // and leave the SVG fallback in place rather than eat the main thread.
+    let sampled = 0
+    let slowFrames = 0
+    let dead = false
     const render = () => {
-      if (!visible || document.hidden) return
+      if (dead || !visible || document.hidden) return
+      const t0 = performance.now()
       const now = performance.now()
       const dt = Math.min((now - last) / 1000, 0.05)
       last = now
@@ -92,6 +98,16 @@ export default function HeroBlob() {
       mesh.position.x = current.x * 0.12
       mesh.position.y = current.y * 0.08
       renderer.render(scene, camera)
+      if (sampled < 40) {
+        sampled++
+        if (performance.now() - t0 > 12) slowFrames++
+        if (sampled === 40 && slowFrames > 12) {
+          dead = true
+          gsap.ticker.remove(render)
+          blobHost?.removeAttribute('data-blob')
+          renderer.domElement.style.opacity = '0'
+        }
+      }
     }
     const io = new IntersectionObserver(([entry]) => {
       visible = !!entry?.isIntersecting

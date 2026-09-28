@@ -98,10 +98,11 @@
 :global(html[data-intro='return']:not([data-navigated])) .line {
   overflow: clip;
 }
-:global(html[data-intro='return']:not([data-navigated])) [data-hero-fade],
-:global(html[data-preloader='full']) [data-hero-fade] {
+:global(html[data-intro='return']:not([data-navigated])) [data-hero-fade] {
   opacity: 0;
 }
+/* First visits: nothing in the hero is hidden — it paints under the preloader curtain from
+   the first frame (that's what LCP measures), and GSAP animates it only if JS is in time. */
 
 /* ── Supporting copy ────────────────────────────────────────────── */
 .intro {

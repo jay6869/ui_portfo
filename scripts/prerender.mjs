@@ -17,14 +17,47 @@ if (errors.length) {
   process.exit(1)
 }
 
-const template = readFileSync(join(dist, 'index.html'), 'utf8')
+// Inline the entry stylesheet: first paint then needs nothing but the HTML (no render-blocking
+// request competing with the JS module preloads on slow connections). Lazy chunks keep theirs.
+let template = readFileSync(join(dist, 'index.html'), 'utf8').replace(
+  /<link rel="stylesheet"[^>]*href="(\/assets\/index-[^"]+\.css)"[^>]*>/,
+  (_m, href) => `<style>${readFileSync(join(dist, href), 'utf8')}</style>`,
+)
+// Start fetching JS only after first paint. The page is fully prerendered and the intro is pure
+// CSS, so nothing visible waits on JS; this keeps ~150KB of module downloads from competing
+// with first paint on slow connections. The loader re-adds the same modulepreloads (no
+// waterfall) and imports the entry on the frame after first paint.
+{
+  const entry = template.match(/<script type="module" crossorigin src="([^"]+)"><\/script>/)
+  const preloads = [
+    ...template.matchAll(/<link rel="modulepreload" crossorigin href="([^"]+)">/g),
+  ].map((m) => m[1])
+  if (entry) {
+    // Waits for the actual first *contentful* paint (not merely the first frame), with a
+    // double-rAF fallback where paint timing is unsupported and a safety timer.
+    const loader =
+      `const d=document,p=${JSON.stringify(preloads)};let s=0;` +
+      `const go=()=>{if(s)return;s=1;for(const h of p){const l=d.createElement('link');l.rel='modulepreload';l.href=h;l.crossOrigin='';d.head.append(l)}import(${JSON.stringify(entry[1])})};` +
+      `const soon=()=>setTimeout(go,0);` +
+      `if(performance.getEntriesByName('first-contentful-paint').length)soon();` +
+      `else if((PerformanceObserver.supportedEntryTypes||[]).includes('paint'))new PerformanceObserver((l,o)=>{if(l.getEntriesByName('first-contentful-paint').length){o.disconnect();soon()}}).observe({type:'paint',buffered:true});` +
+      `else requestAnimationFrame(()=>requestAnimationFrame(soon));` +
+      `setTimeout(go,3000)`
+    template = template
+      .replace(entry[0], '')
+      .replace(/\s*<link rel="modulepreload" crossorigin href="[^"]+">/g, '')
+      .replace('</body>', `  <script type="module">${loader}</script>\n  </body>`)
+  }
+  // Body text renders fine in its metric-matched fallback until Hanken arrives; only the
+  // display face (the hero name) is worth a preload.
+  template = template.replace(/\s*<link rel="preload" as="font"[^>]*hanken[^>]*>/, '')
+}
 const siteUrl = ssr.site.seo.siteUrl.replace(/\/$/, '')
 
-// CSP: allow exactly the inline head script (by hash), nothing else inline.
-const inline = template.match(/<script>([\s\S]*?)<\/script>/)
-const scriptHash = inline
-  ? `'sha256-${createHash('sha256').update(inline[1]).digest('base64')}'`
-  : ''
+// CSP: allow exactly our two inline scripts (head bootstrap + JS loader) by hash, nothing else.
+const scriptHash = [...template.matchAll(/<script(?: type="module")?>([\s\S]*?)<\/script>/g)]
+  .map((m) => `'sha256-${createHash('sha256').update(m[1]).digest('base64')}'`)
+  .join(' ')
 const formOrigin = (() => {
   try {
     return process.env.VITE_FORM_ENDPOINT ? new URL(process.env.VITE_FORM_ENDPOINT).origin : ''

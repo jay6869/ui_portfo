@@ -7,8 +7,19 @@ export const QUERIES = {
   tablet: '(min-width: 768px)',
 } as const
 
+const lists = new Map<string, MediaQueryList>()
+/** Cached MediaQueryList (creating one per call is surprisingly expensive). */
+export function mql(query: string): MediaQueryList {
+  let list = lists.get(query)
+  if (!list) {
+    list = window.matchMedia(query)
+    lists.set(query, list)
+  }
+  return list
+}
+
 export function matches(query: string): boolean {
-  return typeof window !== 'undefined' && window.matchMedia(query).matches
+  return typeof window !== 'undefined' && mql(query).matches
 }
 
 /**
@@ -18,11 +29,11 @@ export function matches(query: string): boolean {
 export function useMediaQuery(query: string, serverValue = false): boolean {
   return useSyncExternalStore(
     (onChange) => {
-      const mql = window.matchMedia(query)
-      mql.addEventListener('change', onChange)
-      return () => mql.removeEventListener('change', onChange)
+      const list = mql(query)
+      list.addEventListener('change', onChange)
+      return () => list.removeEventListener('change', onChange)
     },
-    () => window.matchMedia(query).matches,
+    () => mql(query).matches,
     () => serverValue,
   )
 }
@@ -44,10 +55,20 @@ export function isLowPower(): boolean {
   return false
 }
 
+/**
+ * True only for hardware-accelerated WebGL. Software rasterisers (SwiftShader, llvmpipe — e.g.
+ * GPU-less VMs, blocklisted drivers, headless browsers) run shaders on the CPU and would turn a
+ * decorative blob into seconds of main-thread work, so they get the static fallback.
+ */
 export function hasWebGL(): boolean {
   try {
     const c = document.createElement('canvas')
-    return !!(c.getContext('webgl2') || c.getContext('webgl'))
+    const gl = (c.getContext('webgl2') || c.getContext('webgl')) as WebGLRenderingContext | null
+    if (!gl) return false
+    const info = gl.getExtension('WEBGL_debug_renderer_info')
+    const renderer = info ? String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL)) : ''
+    gl.getExtension('WEBGL_lose_context')?.loseContext()
+    return !/swiftshader|llvmpipe|softpipe|software|microsoft basic render/i.test(renderer)
   } catch {
     return false
   }

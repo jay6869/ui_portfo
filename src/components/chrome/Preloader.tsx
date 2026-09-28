@@ -1,114 +1,96 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, type CSSProperties } from 'react'
 import { site } from '@/content/site'
-import { gsap } from '@/engine/gsap'
 import { useUI } from '@/stores/ui'
 import { KEYS, store } from '@/lib/storage'
 import { HERO_INTRO_EVENT } from '@/components/sections/Hero'
 import s from './Preloader.module.css'
 
+/** Keep in sync with the keyframe timings in Preloader.module.css. */
+export const PRELOADER = { revealMs: 1100, doneMs: 1900, shortMs: 450, skipMs: 650 } as const
+
 /**
- * First-visit theatre, layered over an already-rendered page. The markup is prerendered and only
- * shown when the head script set html[data-preloader] (first visit this session). The hero is
- * painted underneath from the first frame, so this never delays real content — it just decides
- * when you get to see it. Any key or click skips it.
+ * First-visit theatre. It is pure CSS and starts at first paint, so it never waits for (or
+ * delays) JavaScript; the hero underneath is painted from the first frame. JS only marks the
+ * session, tells the hero when the curtain opens (so GSAP can run the letter stagger), and
+ * cleans up. Any key/click skips — handled by the head script, so it works before hydration.
  */
 export function Preloader() {
-  const root = useRef<HTMLDivElement>(null)
-  const counter = useRef<HTMLSpanElement>(null)
   const status = useUI((st) => st.preloader)
   const setStatus = useUI((st) => st.setPreloader)
 
   useEffect(() => {
     const html = document.documentElement
     const mode = html.dataset.preloader
-    const el = root.current
-    if (!mode || !el) {
+    if (!mode) {
       setStatus('done')
       return
     }
     setStatus('running')
     store.set(KEYS.seen, '1', true)
 
+    // CSS animations started at first paint ≈ navigation start + FCP; this is close enough.
+    const t0 = performance.getEntriesByName('first-contentful-paint')[0]?.startTime ?? 0
+    const now = performance.now()
+    const skipped = () => html.classList.contains('pl-skip')
+    const revealAt = mode === 'short' ? 0 : t0 + PRELOADER.revealMs
+    const doneAt = mode === 'short' ? t0 + PRELOADER.shortMs : t0 + PRELOADER.doneMs
+
+    let revealed = false
+    const reveal = (late: boolean) => {
+      if (revealed) return
+      revealed = true
+      setStatus('revealing')
+      window.dispatchEvent(new CustomEvent(HERO_INTRO_EVENT, { detail: { late } }))
+    }
     const finish = () => {
+      reveal(true)
       html.removeAttribute('data-preloader')
+      html.classList.remove('pl-skip')
       setStatus('done')
     }
-    const reveal = () => {
-      setStatus('revealing')
-      window.dispatchEvent(new Event(HERO_INTRO_EVENT))
-    }
 
-    const q = gsap.utils.selector(el)
-    const lines = q('[data-line]')
-    const chars = q('[data-pchar]')
-    const panels = q('[data-panel]')
-    const content = q('[data-content]')
-
-    if (mode === 'short') {
-      const tl = gsap.timeline({ onComplete: finish })
-      tl.set(lines, { opacity: 1 })
-        .call(reveal, [], 0.25)
-        .to(el, { opacity: 0, duration: 0.3, ease: 'none' }, 0.25)
+    const timers: number[] = []
+    if (skipped()) {
+      reveal(now - (window.__jgSkipAt ?? now) > 120)
+      timers.push(window.setTimeout(finish, PRELOADER.skipMs))
+    } else {
+      // Hydrated before the curtain opens → the hero letters can rise with it (GSAP).
+      timers.push(
+        window.setTimeout(
+          () => reveal(performance.now() - revealAt > 150),
+          Math.max(0, revealAt - now),
+        ),
+      )
+      timers.push(window.setTimeout(finish, Math.max(0, doneAt - now) + 50))
+      const onSkip = () => {
+        timers.forEach(window.clearTimeout)
+        reveal(false)
+        timers.push(window.setTimeout(finish, PRELOADER.skipMs))
+      }
+      window.addEventListener('keydown', onSkip, { once: true })
+      window.addEventListener('pointerdown', onSkip, { once: true })
       return () => {
-        tl.kill()
+        timers.forEach(window.clearTimeout)
+        window.removeEventListener('keydown', onSkip)
+        window.removeEventListener('pointerdown', onSkip)
       }
     }
-
-    const count = { v: 0 }
-    const tl = gsap.timeline({ onComplete: finish })
-    tl.fromTo(
-      chars,
-      { yPercent: 110, y: 0 },
-      { yPercent: 0, y: 0, duration: 0.8, stagger: 0.035, ease: 'workshop' },
-      0.1,
-    )
-      .to(
-        count,
-        {
-          v: 100,
-          duration: 1.25,
-          ease: 'power2.inOut',
-          onUpdate: () => {
-            if (counter.current)
-              counter.current.textContent = String(Math.round(count.v)).padStart(3, '0')
-          },
-        },
-        0,
-      )
-      .fromTo(lines[0]!, { opacity: 0, x: -8 }, { opacity: 1, x: 0, duration: 0.35 }, 0.1)
-      .fromTo(lines[1]!, { opacity: 0, x: -8 }, { opacity: 1, x: 0, duration: 0.35 }, 0.55)
-      .fromTo(lines[2]!, { opacity: 0, x: -8 }, { opacity: 1, x: 0, duration: 0.35 }, 1.05)
-      .addLabel('reveal', 1.35)
-      .to(content, { yPercent: -30, opacity: 0, duration: 0.35, ease: 'power2.in' }, 'reveal')
-      .call(reveal, [], 'reveal+=0.1')
-      .to(panels, { yPercent: -100, duration: 0.8, stagger: 0.08, ease: 'wipe' }, 'reveal+=0.1')
-
-    const skip = () => {
-      if (tl.time() < tl.labels.reveal!) tl.seek('reveal')
-      tl.timeScale(1.6)
-    }
-    window.addEventListener('keydown', skip, { once: true })
-    window.addEventListener('pointerdown', skip, { once: true })
-    return () => {
-      window.removeEventListener('keydown', skip)
-      window.removeEventListener('pointerdown', skip)
-      tl.kill()
-    }
+    return () => timers.forEach(window.clearTimeout)
   }, [setStatus])
 
   if (status === 'done') return null
 
   return (
-    <div ref={root} className={s.preloader} aria-hidden="true">
+    <div className={s.preloader} aria-hidden="true">
       <div className={s.panels}>
-        <div className={s.panel} data-panel />
-        <div className={s.panel} data-panel />
+        <div className={s.panel} />
+        <div className={s.panel} />
       </div>
-      <div className={s.content} data-content>
+      <div className={s.content}>
         <p className={s.name}>
           {Array.from(site.name).map((c, i) => (
             <span key={i} className={s.mask}>
-              <span className={s.char} data-pchar>
+              <span className={s.char} style={{ '--i': i } as CSSProperties}>
                 {c === ' ' ? ' ' : c}
               </span>
             </span>
@@ -116,13 +98,13 @@ export function Preloader() {
         </p>
         <ul className={`${s.lines} mono`}>
           {site.preloader.lines.map((l, i) => (
-            <li key={l} data-line>
+            <li key={l} style={{ '--i': i } as CSSProperties}>
               <span className={s.lineIndex}>0{i + 1}</span> {l}
             </li>
           ))}
         </ul>
         <p className={s.counter}>
-          <span ref={counter}>000</span>
+          <span className={s.num} />
         </p>
         <p className={`${s.skip} mono`}>Press any key to skip</p>
       </div>

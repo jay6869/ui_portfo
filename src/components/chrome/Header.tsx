@@ -82,7 +82,7 @@ export function Header() {
                 className={`${s.link} mono`}
                 onClick={(e) => goTo(item.id, e)}
               >
-                <TextRoll text={item.label} />
+                <TextRoll text={item.label} mode="chars" />
               </a>
             </li>
           ))}

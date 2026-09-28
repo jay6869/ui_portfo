@@ -47,7 +47,11 @@ export function WorkCarousel() {
                 }
               >
                 <div className={s.cardCover} data-cover-source={p.slug}>
-                  <ProjectCover media={p.cover} sizes="85vw" />
+                  {/* Generative covers are drawn on the client as the carousel approaches:
+                      hundreds of SVG nodes per cover would bloat the prerendered HTML. */}
+                  {near || p.cover.type !== 'art' ? (
+                    <ProjectCover media={p.cover} sizes="85vw" />
+                  ) : null}
                 </div>
                 <div className={s.cardMeta}>
                   <span className="mono dim">{String(i + 1).padStart(2, '0')}</span>

@@ -10,4 +10,5 @@ interface ImportMeta {
 
 interface Window {
   __jgHydrated?: boolean
+  __jgSkipAt?: number
 }
