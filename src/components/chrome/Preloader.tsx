@@ -6,7 +6,7 @@ import { HERO_INTRO_EVENT } from '@/components/sections/Hero'
 import s from './Preloader.module.css'
 
 /** Keep in sync with the keyframe timings in Preloader.module.css. */
-export const PRELOADER = { revealMs: 1100, doneMs: 1900, shortMs: 450, skipMs: 650 } as const
+const PRELOADER = { revealMs: 1100, doneMs: 1900, shortMs: 450, skipMs: 650 } as const
 
 /**
  * First-visit theatre. It is pure CSS and starts at first paint, so it never waits for (or
