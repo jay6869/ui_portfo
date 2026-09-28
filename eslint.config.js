@@ -39,6 +39,8 @@ export default tseslint.config(
       'react-hooks/set-state-in-effect': 'off',
       'react-hooks/purity': 'off',
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+      // role="list" on styled lists is intentional: Safari drops list semantics with list-style:none
+      'jsx-a11y/no-redundant-roles': ['error', { ul: ['list'], ol: ['list'] }],
       '@typescript-eslint/no-unused-vars': [
         'error',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },

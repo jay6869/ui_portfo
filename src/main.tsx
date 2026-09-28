@@ -20,6 +20,9 @@ if (container.firstElementChild) hydrateRoot(container, app)
 else createRoot(container).render(app)
 
 if (import.meta.env.DEV) {
+  void import('./stores/ui').then(
+    ({ useUI }) => ((window as unknown as { __ui: unknown }).__ui = useUI),
+  )
   void import('./content/validate').then(({ validateContent }) => {
     const errors = validateContent()
     if (errors.length) console.error(`Content validation failed:\n${errors.join('\n')}`)

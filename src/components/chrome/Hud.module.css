@@ -1,0 +1,77 @@
+.hud {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-hud);
+  pointer-events: none;
+}
+.section {
+  position: absolute;
+  left: max(6px, calc(var(--margin) / 2 - 0.55em));
+  bottom: var(--space-l);
+  display: none;
+  overflow: hidden;
+  color: var(--fg-dim);
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+.swap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8em;
+  animation: swap-in 0.7s var(--ease-out);
+}
+.index {
+  color: var(--fg);
+}
+.sep {
+  width: 1px;
+  height: 24px;
+  background: var(--line-strong);
+}
+.progress {
+  display: none;
+  position: absolute;
+  top: calc(var(--header-h) + var(--space-s));
+  bottom: var(--space-m);
+  right: max(8px, calc(var(--margin) / 2 - 1px));
+  width: 1px;
+  background: var(--line);
+}
+.bar {
+  width: 100%;
+  height: 100%;
+  background: var(--accent);
+  transform-origin: top;
+  transform: scaleY(0);
+}
+.section {
+  transition:
+    opacity 0.5s var(--ease-out),
+    transform 0.6s var(--ease-out),
+    color 0.3s var(--ease-out),
+    border-color 0.3s var(--ease-out);
+}
+/* Out of the way while the hero (which has its own bottom row) is on screen */
+.hud[data-idle='true'] .section {
+  opacity: 0;
+}
+@keyframes swap-in {
+  from {
+    transform: translateY(-100%);
+  }
+}
+@media (min-width: 768px) {
+  .progress {
+    display: block;
+  }
+}
+@media (min-width: 1024px) {
+  .section {
+    display: inline-flex;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .swap {
+    animation: none;
+  }
+}

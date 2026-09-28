@@ -1,0 +1,26 @@
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  height: 26px;
+  padding-inline: 0.85em;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 450;
+  letter-spacing: var(--tracking-mono);
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  white-space: nowrap;
+}
+.accent {
+  border-color: var(--accent-ink);
+  color: var(--accent-ink);
+}
+.placeholder {
+  border-style: dashed;
+  border-color: var(--accent-ink);
+  color: var(--accent-ink);
+}

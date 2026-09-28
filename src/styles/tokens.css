@@ -85,6 +85,10 @@
   --space-2xl: clamp(5rem, 3rem + 8vw, 11rem);
   --space-section: clamp(6rem, 4rem + 10vw, 14rem);
 
+  /* Cover aspect shared by carousel cards, the floating preview and the case-study cover, so
+     the shared-element transition is a uniform (distortion-free) scale. */
+  --cover-aspect: 4 / 5;
+
   --columns: 4;
   --gutter: clamp(12px, 1.6vw, 24px);
   --margin: clamp(16px, 4vw, 64px);
@@ -115,6 +119,11 @@
   --z-cursor: 120;
 }
 
+@media (min-width: 560px) {
+  :root {
+    --cover-aspect: 4 / 3;
+  }
+}
 @media (min-width: 768px) {
   :root {
     --columns: 8;
@@ -122,6 +131,7 @@
 }
 @media (min-width: 1024px) {
   :root {
+    --cover-aspect: 16 / 9;
     --columns: 12;
     --header-h: 72px;
   }

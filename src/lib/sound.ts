@@ -1,14 +1,14 @@
 import { useEffect } from 'react'
 import throttle from 'lodash-es/throttle'
+import type * as Tone from 'tone'
 import { useUI } from '@/stores/ui'
 
 /**
  * Optional UI sound. Off by default, remembered, never autoplays: Tone.js is only downloaded and
  * started after the visitor turns sound on (a user gesture, as browsers require).
  */
-type ToneModule = typeof import('tone')
-let tone: ToneModule | null = null
-let synth: import('tone').PolySynth | null = null
+let tone: typeof Tone | null = null
+let synth: Tone.PolySynth | null = null
 let loading: Promise<void> | null = null
 
 export function loadSound(): Promise<void> {

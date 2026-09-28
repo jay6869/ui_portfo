@@ -3,8 +3,11 @@ import { useLocation, type Location } from 'react-router-dom'
 import { scroller } from './scroll'
 import { ScrollTrigger } from './gsap'
 import { useUI } from '@/stores/ui'
+import { QUERIES, matches } from './media'
+
+const SHARED_LEAD_MS = 320
 import { getProject } from '@/content/projects'
-import { stripTokens } from '@/components/primitives/Copy'
+import { stripTokens } from '@/lib/text'
 
 export type TransitionPhase = 'idle' | 'cover' | 'reveal'
 
@@ -38,6 +41,9 @@ export function useRouteTransition() {
   }, [])
 
   useEffect(() => {
+    // Scroll restoration mode is stored per history entry; keep every entry on 'manual' so the
+    // browser never jumps before our transition has measured the outgoing page.
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
     pending.current = location
     const current = displayRef.current
     if (location.pathname === current.pathname) {
@@ -47,6 +53,25 @@ export function useRouteTransition() {
     if (useUI.getState().sharedCover.phase !== 'idle') {
       swap(location)
       return
+    }
+    // Case study → home (back button or browser back): shrink the cover back into its row/card
+    if (
+      current.pathname.startsWith('/work/') &&
+      location.pathname === '/' &&
+      !matches(QUERIES.reducedMotion)
+    ) {
+      const el = document.querySelector<HTMLElement>('[data-cover-target]')
+      const r = el?.getBoundingClientRect()
+      if (el && r && r.bottom > 80) {
+        useUI.getState().startSharedCover('in', el.dataset.coverTarget!, {
+          top: r.top,
+          left: r.left,
+          width: r.width,
+          height: r.height,
+        })
+        const t = window.setTimeout(() => swap(pending.current), SHARED_LEAD_MS)
+        return () => window.clearTimeout(t)
+      }
     }
     setTitle(routeTitle(location.pathname))
     setPhase('cover')

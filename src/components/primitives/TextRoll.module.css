@@ -1,0 +1,54 @@
+.roll {
+  display: inline-block;
+  position: relative;
+  line-height: 1.15;
+  vertical-align: bottom;
+}
+.visual {
+  display: inline-flex;
+  white-space: pre;
+}
+.char {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  /* Room for descenders without letting the copy peek through */
+  padding-block: 0.08em;
+  margin-block: -0.08em;
+}
+.a,
+.b {
+  display: block;
+  transition: transform 0.55s var(--ease-snap);
+  transition-delay: calc(var(--i) * 0.018s);
+}
+.b {
+  position: absolute;
+  inset: 0.08em 0 auto 0;
+  transform: translateY(110%);
+}
+
+:global(:is(a, button, label, [data-roll-host])):is(:hover, :focus-visible) .a,
+:global([data-roll-active='true']) .a {
+  transform: translateY(-110%);
+}
+:global(:is(a, button, label, [data-roll-host])):is(:hover, :focus-visible) .b,
+:global([data-roll-active='true']) .b {
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a,
+  .b {
+    transition: none;
+  }
+  .b {
+    display: none;
+  }
+  :global(:is(a, button, label, [data-roll-host])):is(:hover, :focus-visible) .a {
+    transform: none;
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+    text-decoration-thickness: 1px;
+  }
+}

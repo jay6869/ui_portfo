@@ -1,4 +1,4 @@
-import { Fragment, type ReactNode } from 'react'
+import { PLACEHOLDER_RE } from '@/content/placeholders'
 
 export interface Segment {
   text: string
@@ -20,19 +20,19 @@ export function parseEmphasis(input: string): Segment[] {
   return out
 }
 
+/** Strip `*emphasis*` markers. */
 export const plain = (input: string) => input.replace(/\*([^*]+)\*/g, '$1')
 
-/** Render `*word*` emphasis as the italic clay accent. */
-export function Rich({ text }: { text: string }): ReactNode {
-  return parseEmphasis(text).map((s, i) =>
-    s.em ? (
-      <em key={i} className="accent">
-        {s.text}
-      </em>
-    ) : (
-      <Fragment key={i}>{s.text}</Fragment>
-    ),
-  )
+/** Remove [PLACEHOLDER] / [EDIT ME: …] markers (meta tags, wipes, aria-labels). */
+export function stripTokens(text: string): string {
+  return plain(text)
+    .replace(PLACEHOLDER_RE, (_m, _kind, note?: string) => note ?? '')
+    .replace(/\s{2,}/g, ' ')
+    .trim()
+}
+
+export function hasToken(text: string): boolean {
+  return new RegExp(PLACEHOLDER_RE.source).test(text)
 }
 
 export const cx = (...c: Array<string | false | null | undefined>) => c.filter(Boolean).join(' ')

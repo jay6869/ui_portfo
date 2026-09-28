@@ -1,0 +1,15 @@
+.host {
+  position: absolute;
+  inset: -12%;
+  opacity: 0;
+  animation: in 1.4s var(--ease-out) 0.1s forwards;
+}
+.host canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+@keyframes in {
+  to {
+    opacity: 1;
+  }
+}

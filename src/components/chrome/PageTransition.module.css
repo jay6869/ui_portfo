@@ -9,6 +9,11 @@
   transform: translateY(100%);
   pointer-events: none;
   will-change: transform;
+  visibility: hidden;
+}
+.panel[data-phase='cover'],
+.panel[data-phase='reveal'] {
+  visibility: visible;
 }
 .panel[data-phase='cover'],
 .panel[data-phase='reveal'] {

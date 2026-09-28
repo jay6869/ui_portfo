@@ -1,0 +1,306 @@
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
+  grid-template-rows: auto auto 1fr auto auto;
+  column-gap: var(--gutter);
+  padding: calc(var(--header-h) + var(--space-l)) var(--margin) var(--space-l);
+  overflow: clip;
+  outline: none;
+}
+
+/* Soft lamp-light, top left */
+.lamp {
+  position: absolute;
+  inset: -55vmax auto auto -45vmax;
+  width: 130vmax;
+  height: 130vmax;
+  background: radial-gradient(
+    closest-side,
+    var(--lamp) 0%,
+    color-mix(in srgb, var(--lamp) 60%, transparent) 35%,
+    color-mix(in srgb, var(--lamp) 22%, transparent) 65%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+.eyebrow {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+  color: var(--fg-dim);
+}
+.eyebrowPart {
+  white-space: nowrap;
+}
+
+.blob {
+  position: absolute;
+  top: calc(var(--header-h) + max(18vh, 120px) + var(--space-l) + 2em - 12vw);
+  right: calc(var(--margin) - 2vw);
+  width: min(40vw, 240px);
+  aspect-ratio: 1;
+  pointer-events: none;
+}
+
+/* ── Name ───────────────────────────────────────────────────────── */
+.name {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  position: relative;
+  z-index: 1;
+  margin-top: max(18vh, 120px);
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: min(26vw, 38svh);
+  line-height: 0.8;
+  letter-spacing: -0.035em;
+  font-kerning: normal;
+}
+.line {
+  display: block;
+  white-space: nowrap;
+}
+.line:first-child {
+  padding-left: 0.1em;
+}
+.lineTwo {
+  padding-left: 0.62em;
+}
+.masked .line {
+  overflow: clip;
+  /* keep ascenders; the J's descender dips into the next line once revealed */
+  overflow-clip-margin: 0.04em;
+}
+.char {
+  display: inline-block;
+}
+.char > span {
+  display: inline-block;
+  transform-origin: 50% 90%;
+}
+.accent {
+  font-style: italic;
+  color: var(--accent-ink);
+  margin-right: -0.04em;
+  margin-left: -0.08em;
+}
+
+/* Return visits within a session: hidden from the very first paint, the timeline reveals them.
+   (The head script sets data-intro; a failsafe clears it if JS never boots.) */
+:global(html[data-intro='return']:not([data-navigated])) .char {
+  transform: translateY(112%);
+}
+:global(html[data-intro='return']:not([data-navigated])) .line {
+  overflow: clip;
+}
+:global(html[data-intro='return']:not([data-navigated])) [data-hero-fade],
+:global(html[data-preloader='full']) [data-hero-fade] {
+  opacity: 0;
+}
+
+/* ── Supporting copy ────────────────────────────────────────────── */
+.intro {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  align-self: start;
+  margin-top: var(--space-l);
+  max-width: 34ch;
+  font-size: var(--step-1);
+  line-height: 1.45;
+  color: var(--fg);
+}
+.facts {
+  grid-column: 1 / -1;
+  grid-row: 4;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3em 0;
+  margin: var(--space-l) 0 var(--space-m);
+  padding: 0;
+  color: var(--fg-dim);
+}
+.facts li + li::before {
+  content: '·';
+  margin-inline: 0.8em;
+  color: var(--line-strong);
+}
+
+.bottom {
+  grid-column: 1 / -1;
+  grid-row: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-s);
+  padding-top: var(--space-m);
+  border-top: var(--hairline);
+}
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8em;
+  padding: 0.6em 1em 0.6em 0.85em;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  color: var(--fg);
+}
+.statusDot {
+  position: relative;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--status);
+}
+.statusDot::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid var(--status);
+  opacity: 0;
+  animation: ping 2.8s var(--ease-out) infinite;
+}
+.status[data-open='false'] .statusDot {
+  background: var(--fg-dim);
+}
+.status[data-open='false'] .statusDot::after {
+  display: none;
+}
+
+.scroll {
+  display: none;
+  align-items: center;
+  gap: 0.9em;
+  color: var(--fg-dim);
+  padding-block: 8px;
+  transition: color 0.3s var(--ease-out);
+}
+.scroll:is(:hover, :focus-visible) {
+  color: var(--fg);
+}
+.scrollLine {
+  position: relative;
+  width: 1px;
+  height: 36px;
+  overflow: hidden;
+  background: var(--line);
+}
+.scrollLine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform: translateY(-100%);
+  animation: drip 2.4s var(--ease-inout) infinite;
+}
+
+@keyframes ping {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.7;
+  }
+  70%,
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+@keyframes drip {
+  0% {
+    transform: translateY(-100%);
+  }
+  50% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+/* ── Tablet ─────────────────────────────────────────────────────── */
+@media (min-width: 768px) {
+  .eyebrow {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.3em 0;
+  }
+  .eyebrowPart + .eyebrowPart::before {
+    content: '·';
+    margin-inline: 0.8em;
+    color: var(--line-strong);
+  }
+  .scroll {
+    display: inline-flex;
+  }
+  .name {
+    font-size: min(23.5vw, 36svh);
+    margin-top: max(12vh, 90px);
+  }
+  .blob {
+    width: min(40vw, 420px);
+    right: var(--margin);
+    top: calc(var(--header-h) + 6vh);
+  }
+  .intro {
+    grid-column: 1 / span 5;
+  }
+  .facts {
+    grid-column: 5 / -1;
+    grid-row: 3;
+    justify-content: flex-end;
+    align-self: end;
+    margin: 0;
+  }
+}
+
+/* ── Desktop ────────────────────────────────────────────────────── */
+@media (min-width: 1024px) {
+  .hero {
+    grid-template-rows: auto 1fr auto auto;
+    padding-top: calc(var(--header-h) + var(--space-m));
+  }
+  .eyebrow {
+    grid-column: 1 / span 8;
+    align-self: start;
+  }
+  .name {
+    grid-row: 2;
+    align-self: end;
+    margin-top: 0;
+    font-size: min(19.5vw, 40svh);
+  }
+  .lineTwo {
+    padding-left: 1.08em;
+  }
+  .blob {
+    top: auto;
+    bottom: calc(50% - 4vw);
+    right: calc(var(--margin) + 4vw);
+    width: min(27vw, 46svh);
+  }
+  .intro {
+    grid-column: 1 / span 4;
+    grid-row: 3;
+    margin-top: var(--space-l);
+  }
+  .facts {
+    grid-column: 9 / -1;
+    grid-row: 3;
+  }
+  .bottom {
+    grid-row: 4;
+    margin-top: var(--space-l);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .statusDot::after,
+  .scrollLine::after {
+    animation: none;
+  }
+}

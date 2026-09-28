@@ -185,10 +185,18 @@ em.accent {
   padding-bottom: 0.06em;
   margin-bottom: -0.06em;
 }
+.split-mask {
+  display: inline-block;
+  overflow: clip;
+  /* Room for descenders and italic overhang */
+  overflow-clip-margin: 0.2em;
+  padding: 0.04em 0.06em 0.12em;
+  margin: -0.04em -0.06em -0.12em;
+  vertical-align: top;
+}
 .split-word,
 .split-char {
   display: inline-block;
-  will-change: transform;
 }
 
 /* ── Scrollbar ─────────────────────────────────────────────────── */

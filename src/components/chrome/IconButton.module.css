@@ -1,0 +1,28 @@
+.iconButton {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: var(--fg-dim);
+  transition:
+    color 0.35s var(--ease-out),
+    background-color 0.35s var(--ease-out);
+}
+.iconButton:is(:hover, :focus-visible) {
+  color: var(--fg);
+  background: var(--bg-hover);
+}
+.iconButton[data-state='on'] {
+  color: var(--fg);
+}
+.themeIcon {
+  transition: transform 0.7s var(--ease-snap);
+}
+:global([data-theme='paper']) .themeIcon {
+  transform: rotate(180deg);
+}
+.eq {
+  display: none;
+}

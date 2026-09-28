@@ -1,0 +1,116 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-dialog);
+  background: color-mix(in srgb, var(--ink-950) 72%, transparent);
+  animation: fade-in 0.35s var(--ease-out);
+}
+.overlay[data-state='closed'] {
+  animation: fade-out 0.25s var(--ease-out) forwards;
+}
+.content {
+  position: fixed;
+  z-index: calc(var(--z-dialog) + 1);
+  color: var(--fg);
+}
+.panel {
+  top: min(14vh, 120px);
+  left: 50%;
+  width: min(640px, calc(100vw - 2 * var(--margin)));
+  max-height: min(72vh, 620px);
+  display: flex;
+  flex-direction: column;
+  transform: translateX(-50%);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-m);
+  background: var(--bg-raised);
+  box-shadow: var(--shadow-deep);
+  overflow: hidden;
+  animation: panel-in 0.5s var(--ease-out);
+}
+.panel[data-state='closed'] {
+  animation: panel-out 0.22s var(--ease-out) forwards;
+}
+.fullscreen {
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  overflow-y: auto;
+  animation: sheet-in 0.6s var(--ease-inout);
+}
+.fullscreen[data-state='closed'] {
+  animation: sheet-out 0.45s var(--ease-inout) forwards;
+}
+.title {
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: var(--tracking-mono);
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  padding: var(--space-s) var(--space-m) 0;
+}
+.close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: var(--fg-dim);
+  transition:
+    color 0.3s var(--ease-out),
+    background-color 0.3s var(--ease-out);
+}
+.close:is(:hover, :focus-visible) {
+  color: var(--fg);
+  background: var(--bg-hover);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 12px) scale(0.98);
+  }
+}
+@keyframes panel-out {
+  to {
+    opacity: 0;
+    transform: translate(-50%, 6px) scale(0.99);
+  }
+}
+@keyframes sheet-in {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes sheet-out {
+  from {
+    clip-path: inset(0 0 0 0);
+  }
+  to {
+    clip-path: inset(100% 0 0 0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .panel,
+  .fullscreen,
+  .overlay {
+    animation-duration: 0.01ms;
+  }
+}

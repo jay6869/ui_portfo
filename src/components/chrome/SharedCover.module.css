@@ -1,0 +1,18 @@
+.layer {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-shared);
+  pointer-events: none;
+}
+.backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+}
+.frame {
+  position: fixed;
+  transform-origin: 50% 50%;
+  overflow: hidden;
+  border-radius: var(--radius-s);
+  will-change: transform;
+}

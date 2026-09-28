@@ -1,0 +1,10 @@
+.blob {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transition: opacity 1.2s var(--ease-out);
+}
+:global([data-blob='ready']) .blob {
+  opacity: 0;
+}

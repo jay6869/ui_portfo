@@ -1,0 +1,169 @@
+.work {
+  position: relative;
+  padding-top: var(--space-section);
+  padding-bottom: var(--space-2xl);
+  outline: none;
+}
+
+/* Desktop list vs. touch carousel — decided by capability, not only width */
+.desktop {
+  display: none;
+}
+.mobile {
+  display: block;
+}
+@media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+  .desktop {
+    display: block;
+  }
+  .mobile {
+    display: none;
+  }
+}
+
+/* ── List ─────────────────────────────────────────────────────── */
+.list {
+  position: relative;
+}
+.rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.subhead {
+  padding: var(--space-xl) var(--margin) var(--space-s);
+}
+
+/* ── Floating preview ─────────────────────────────────────────── */
+.preview {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  width: clamp(260px, 24vw, 460px);
+  aspect-ratio: 16 / 9;
+  margin: calc(clamp(260px, 24vw, 460px) * -0.28125) 0 0 calc(clamp(260px, 24vw, 460px) * -0.5);
+  pointer-events: none;
+  will-change: transform;
+}
+.previewInner {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: var(--radius-s);
+  box-shadow: var(--shadow-deep);
+  clip-path: inset(50% 50% 50% 50%);
+  transition: clip-path 0.7s var(--ease-snap);
+}
+.preview[data-visible='true'] .previewInner {
+  clip-path: inset(0 0 0 0);
+}
+/* The shared-cover layer takes over from here: vanish instantly underneath it */
+.preview[data-handoff='true'] .previewInner {
+  transition: none;
+}
+.previewItem {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(100% 0 0 0);
+  transform: scale(1.12);
+  transition:
+    clip-path 0.75s var(--ease-snap),
+    transform 1.1s var(--ease-out);
+}
+.previewItem[data-active='true'] {
+  clip-path: inset(0 0 0 0);
+  transform: scale(1);
+  z-index: 1;
+}
+
+/* ── Carousel ─────────────────────────────────────────────────── */
+.carousel {
+  padding-inline: var(--margin);
+}
+.swiper {
+  overflow: visible;
+}
+/* Before Swiper boots (or without JS): native scroll-snap track */
+.swiper:not(:global(.swiper-initialized)) .track {
+  display: flex;
+  gap: 14px;
+  margin: 0 calc(var(--margin) * -1);
+  padding: 0 var(--margin);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--margin);
+  scrollbar-width: none;
+}
+.swiper:not(:global(.swiper-initialized)) .slide {
+  flex: 0 0 86%;
+  scroll-snap-align: start;
+}
+.track {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.slide {
+  height: auto;
+}
+.card {
+  display: block;
+}
+.cardCover {
+  aspect-ratio: var(--cover-aspect);
+  border-radius: var(--radius-s);
+  overflow: hidden;
+  transition: transform 0.6s var(--ease-snap);
+}
+.card:active .cardCover {
+  transform: scale(0.985);
+}
+.cardMeta {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--space-s);
+}
+.cardTitle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3em 0.5em;
+  margin-top: var(--space-2xs);
+  font-family: var(--font-display);
+  font-size: var(--step-2);
+  line-height: 1.05;
+  letter-spacing: var(--tracking-display);
+}
+.cardTag {
+  height: 22px;
+  font-size: 0.58rem;
+}
+.cardDiscipline {
+  margin-top: var(--space-2xs);
+}
+.progress {
+  display: flex;
+  align-items: center;
+  gap: var(--space-s);
+  margin-top: var(--space-l);
+}
+.progressTrack {
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+  overflow: hidden;
+}
+.progressBar {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transform-origin: left;
+  transition: transform 0.6s var(--ease-snap);
+}
+
+@media (min-width: 560px) {
+  .swiper:not(:global(.swiper-initialized)) .slide {
+    flex-basis: 62%;
+  }
+}

@@ -1,22 +1,7 @@
 import { Fragment } from 'react'
 import { PLACEHOLDER_RE } from '@/content/placeholders'
-import { Rich } from '@/lib/text'
+import { Rich } from './Rich'
 import s from './Copy.module.css'
-
-/** Remove [PLACEHOLDER] / [EDIT ME: …] markers (for titles in meta tags, wipes, aria-labels). */
-export function stripTokens(text: string): string {
-  return text
-    .replace(PLACEHOLDER_RE, (_m, _kind, note?: string) => note ?? '')
-    .replace(/\s{2,}/g, ' ')
-    .trim()
-}
-
-export function hasToken(text: string) {
-  PLACEHOLDER_RE.lastIndex = 0
-  const r = PLACEHOLDER_RE.test(text)
-  PLACEHOLDER_RE.lastIndex = 0
-  return r
-}
 
 /**
  * Renders content copy. `[PLACEHOLDER]` and `[EDIT ME: note]` become visible mono tags so

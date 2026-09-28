@@ -14,6 +14,7 @@
       ;(function () {
         var d = document.documentElement
         d.classList.add('js')
+        if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
         var theme = 'charcoal'
         try {
           var saved = localStorage.getItem('jg:theme')

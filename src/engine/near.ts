@@ -6,7 +6,7 @@ import { useEffect, useRef, useState, type RefObject } from 'react'
  */
 export function useNearViewport<T extends Element>(
   rootMargin = '600px 0px',
-): [RefObject<T | null>, boolean] {
+): [RefObject<T>, boolean] {
   const ref = useRef<T>(null)
   const [near, setNear] = useState(false)
   useEffect(() => {
@@ -32,10 +32,7 @@ export function useNearViewport<T extends Element>(
 }
 
 /** Live visibility (for pausing render loops when off-screen). */
-export function useInView<T extends Element>(
-  ref: RefObject<T | null>,
-  rootMargin = '0px',
-): boolean {
+export function useInView<T extends Element>(ref: RefObject<T>, rootMargin = '0px'): boolean {
   const [inView, setInView] = useState(false)
   useEffect(() => {
     const el = ref.current
