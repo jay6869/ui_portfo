@@ -1,0 +1,96 @@
+.section {
+  position: relative;
+  padding-top: var(--space-section);
+  padding-bottom: var(--space-2xl);
+  outline: none;
+}
+.stack {
+  display: grid;
+  gap: 12vh;
+  margin: 0;
+  padding: 0 var(--margin);
+}
+.card {
+  position: sticky;
+  top: calc(var(--header-h) + var(--space-s) + var(--i) * 14px);
+}
+.inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
+  column-gap: var(--gutter);
+  align-content: space-between;
+  row-gap: var(--space-l);
+  min-height: min(72svh, 640px);
+  padding: var(--space-l) var(--space-m);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  background: var(--bg-raised);
+  transform-origin: 50% 0%;
+  overflow: hidden;
+  will-change: transform;
+}
+.top {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.num {
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 2rem + 9vw, 11rem);
+  line-height: 0.7;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--line-strong);
+}
+.title {
+  grid-column: 1 / -1;
+  font-family: var(--font-display);
+  font-size: var(--step-4);
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
+}
+.body {
+  grid-column: 1 / -1;
+  max-width: 40ch;
+  font-size: var(--step-1);
+  line-height: 1.45;
+  color: var(--fg);
+}
+.tools {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4em 0;
+  margin: 0;
+  padding: var(--space-s) 0 0;
+  border-top: var(--hairline);
+  color: var(--fg-dim);
+}
+.tools li + li::before {
+  content: '/';
+  margin-inline: 0.8em;
+  color: var(--line-strong);
+}
+.shade {
+  position: absolute;
+  inset: 0;
+  background: var(--ink-950);
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (min-width: 1024px) {
+  .inner {
+    padding: var(--space-xl) var(--space-xl) var(--space-l);
+  }
+  .title {
+    grid-column: 1 / span 7;
+    align-self: end;
+  }
+  .body {
+    grid-column: 8 / -1;
+    align-self: end;
+    padding-bottom: 0.4em;
+  }
+}

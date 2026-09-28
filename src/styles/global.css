@@ -90,8 +90,7 @@ h4 {
 p {
   text-wrap: pretty;
 }
-ul[role='list'],
-ol[role='list'] {
+:where(ul[role='list'], ol[role='list']) {
   list-style: none;
   padding: 0;
 }

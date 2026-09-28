@@ -1,0 +1,275 @@
+.section {
+  position: relative;
+  padding-top: var(--space-section);
+  padding-bottom: var(--space-2xl);
+  outline: none;
+}
+.layout {
+  row-gap: var(--space-xl);
+  align-items: start;
+}
+.viz {
+  grid-column: 1 / -1;
+}
+.vizFrame {
+  position: relative;
+  aspect-ratio: 1;
+  max-width: 760px;
+  margin-inline: auto;
+  /* Static rings as the placeholder/no-JS view — the orbit draws over the same geometry */
+  background: radial-gradient(
+    circle at center,
+    transparent 0 11.4%,
+    var(--line) 11.5% 11.6%,
+    transparent 11.7% 19.4%,
+    var(--line) 19.5% 19.6%,
+    transparent 19.7% 27.4%,
+    var(--line) 27.5% 27.6%,
+    transparent 27.7% 35.4%,
+    var(--line) 35.5% 35.6%,
+    transparent 35.7% 43.4%,
+    var(--line) 43.5% 43.6%,
+    transparent 43.7%
+  );
+}
+.vizFrame:has(svg) {
+  background: none;
+}
+.caption {
+  margin-top: var(--space-s);
+  text-align: center;
+  text-transform: none;
+  letter-spacing: 0.04em;
+}
+.side {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: var(--space-l);
+}
+
+/* ── Orbit SVG ───────────────────────────────────────────────── */
+.orbit {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.ring {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 1;
+  transition: stroke 0.4s var(--ease-out);
+}
+.ring[data-on='true'] {
+  stroke: var(--line-strong);
+}
+.ringLabel {
+  paint-order: stroke;
+  stroke: var(--bg);
+  stroke-width: 6px;
+  stroke-linejoin: round;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  fill: var(--fg-dim);
+}
+.core {
+  fill: var(--accent);
+}
+.node {
+  cursor: default;
+  transition: opacity 0.4s var(--ease-out);
+}
+.node[data-state='dim'] {
+  opacity: 0.22;
+}
+.dot {
+  fill: var(--fg);
+  transition:
+    fill 0.3s var(--ease-out),
+    transform 0.5s var(--ease-snap);
+}
+.dotHollow {
+  fill: var(--bg);
+  stroke: var(--fg-dim);
+  stroke-width: 1.2;
+}
+.node[data-state='active'] .dot {
+  fill: var(--accent);
+  transform: scale(1.3);
+}
+.label {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 450;
+  fill: var(--fg);
+  paint-order: stroke;
+  stroke: var(--bg);
+  stroke-width: 5px;
+  stroke-linejoin: round;
+}
+.node[data-state='active'] .label {
+  font-weight: 600;
+}
+.hit {
+  fill: transparent;
+}
+.link {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.4;
+  stroke-opacity: 0.7;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw 0.7s var(--ease-out) forwards;
+}
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ── Legend (source of truth) ────────────────────────────────── */
+.legend {
+  display: grid;
+  gap: var(--space-m);
+}
+.group {
+  display: grid;
+  gap: var(--space-2xs);
+  padding-top: var(--space-s);
+  border-top: var(--hairline);
+}
+.tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+}
+.tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+  min-height: 34px;
+  padding: 0.35em 0.5em 0.35em 0.85em;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  font-size: var(--step--1);
+  transition:
+    opacity 0.35s var(--ease-out),
+    border-color 0.3s var(--ease-out),
+    color 0.3s var(--ease-out);
+}
+.count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.6em;
+  height: 1.6em;
+  border-radius: var(--radius-pill);
+  background: var(--bg-hover);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--fg-dim);
+}
+.tool[data-state='dim'] {
+  opacity: 0.4;
+}
+.tool[data-state='active'],
+.tool[aria-pressed='true'] {
+  border-color: var(--accent-ink);
+  color: var(--accent-ink);
+}
+.tool[data-state='related'] {
+  border-color: var(--fg-dim);
+}
+.readout {
+  min-height: 7.5em;
+  padding: var(--space-s) 0;
+  border-top: var(--hairline);
+}
+.readoutTitle {
+  font-size: var(--step-1);
+}
+.readoutTitle em {
+  font-family: var(--font-display);
+  font-size: 1.3em;
+}
+.readoutList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3em 1.2em;
+  margin: var(--space-2xs) 0 0;
+  color: var(--fg);
+}
+
+/* ── GitHub strip ───────────────────────────────────────────── */
+.github {
+  margin-top: var(--space-xl);
+  row-gap: var(--space-s);
+}
+.githubTitle {
+  grid-column: 1 / -1;
+}
+.repos {
+  grid-column: 1 / -1;
+  margin: 0;
+  border-top: var(--hairline);
+}
+.repos li {
+  border-bottom: var(--hairline);
+}
+.repo {
+  display: grid;
+  grid-template-columns: 1fr auto 18px;
+  gap: var(--space-s);
+  align-items: center;
+  padding-block: var(--space-s);
+}
+.repo > :nth-child(3) {
+  display: none;
+}
+.repoName {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  transition:
+    transform 0.5s var(--ease-snap),
+    color 0.3s;
+}
+.repo:is(:hover, :focus-visible) .repoName {
+  transform: translateX(6px);
+  color: var(--accent-ink);
+}
+.repoArrow {
+  color: var(--fg-dim);
+}
+
+@media (min-width: 768px) {
+  .repo {
+    grid-template-columns: 1fr 10rem 8rem 18px;
+  }
+  .repo > :nth-child(3) {
+    display: block;
+  }
+}
+@media (min-width: 1024px) {
+  .viz {
+    grid-column: 1 / span 7;
+    position: sticky;
+    top: calc(var(--header-h) + var(--space-m));
+  }
+  .side {
+    grid-column: 8 / -1;
+  }
+  .githubTitle {
+    grid-column: 1 / span 4;
+  }
+  .repos {
+    grid-column: 5 / -1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .link {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}

@@ -29,7 +29,10 @@ const { values: a } = parseArgs({
 })
 
 const executablePath = process.env.CHROME_PATH || '/usr/bin/google-chrome-stable'
-const browser = await chromium.launch({ executablePath, args: ['--enable-webgl', '--ignore-gpu-blocklist'] })
+const browser = await chromium.launch({
+  executablePath,
+  args: ['--enable-webgl', '--ignore-gpu-blocklist'],
+})
 mkdirSync('.shots', { recursive: true })
 const heights = { 375: 812, 768: 1024, 1024: 768, 1440: 900, 1920: 1080 }
 const errors = []
@@ -52,7 +55,8 @@ for (const w of a.widths.split(',').map(Number)) {
   )
   const page = await ctx.newPage()
   page.on('console', (m) => {
-    if (m.type() === 'error' || m.type() === 'warning') errors.push(`[${w}] ${m.type()}: ${m.text()}`)
+    if (m.type() === 'error' || m.type() === 'warning')
+      errors.push(`[${w}] ${m.type()}: ${m.text()}`)
   })
   page.on('pageerror', (e) => errors.push(`[${w}] pageerror: ${e.message}`))
   await page.goto(a.url, { waitUntil: 'networkidle' })

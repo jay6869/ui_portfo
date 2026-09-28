@@ -15,7 +15,7 @@
   border-bottom: 1px solid transparent;
 }
 .header[data-scrolled='true'] {
-  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  background: var(--bg);
   border-bottom-color: var(--line);
 }
 .header[data-hidden='true'] {
