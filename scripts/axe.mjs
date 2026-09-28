@@ -7,11 +7,16 @@ import { chromium } from 'playwright-core'
 import { AxeBuilder } from '@axe-core/playwright'
 
 const BASE = process.env.BASE_URL || 'http://localhost:4173'
-const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH || '/usr/bin/google-chrome-stable' })
+const browser = await chromium.launch({
+  executablePath: process.env.CHROME_PATH || '/usr/bin/google-chrome-stable',
+})
 let failures = 0
 
 async function audit(label, { path = '/', width = 1440, theme = 'charcoal', setup } = {}) {
-  const ctx = await browser.newContext({ viewport: { width, height: 900 }, colorScheme: theme === 'paper' ? 'light' : 'dark' })
+  const ctx = await browser.newContext({
+    viewport: { width, height: 900 },
+    colorScheme: theme === 'paper' ? 'light' : 'dark',
+  })
   await ctx.addInitScript((t) => {
     sessionStorage.setItem('jg:seen', '1')
     localStorage.setItem('jg:theme', t)
@@ -33,10 +38,13 @@ async function audit(label, { path = '/', width = 1440, theme = 'charcoal', setu
     .analyze()
   const v = res.violations
   failures += v.length
-  console.log(`${v.length ? '✖' : '✔'} ${label.padEnd(34)} ${v.length} violations, ${res.passes.length} rules passed`)
+  console.log(
+    `${v.length ? '✖' : '✔'} ${label.padEnd(34)} ${v.length} violations, ${res.passes.length} rules passed`,
+  )
   for (const x of v) {
     console.log(`   - [${x.impact}] ${x.id}: ${x.help}`)
-    for (const n of x.nodes.slice(0, 3)) console.log(`       ${n.target.join(' ')}  ${n.failureSummary?.split('\n')[1] ?? ''}`)
+    for (const n of x.nodes.slice(0, 3))
+      console.log(`       ${n.target.join(' ')}  ${n.failureSummary?.split('\n')[1] ?? ''}`)
   }
   await ctx.close()
 }
@@ -48,9 +56,16 @@ await audit('home · paper · mobile', { width: 375, theme: 'paper' })
 await audit('case study · charcoal', { path: '/work/flagship-one' })
 await audit('case study · paper', { path: '/work/flagship-two', theme: 'paper' })
 await audit('404', { path: '/nope' })
-await audit('command palette open', { setup: async (p) => (await p.keyboard.press('Control+k'), p.waitForTimeout(500)) })
-await audit('shortcuts sheet open', { setup: async (p) => (await p.keyboard.press('Shift+Slash'), p.waitForTimeout(500)) })
-await audit('mobile menu open', { width: 375, setup: async (p) => (await p.click('button[aria-haspopup="dialog"]'), p.waitForTimeout(700)) })
+await audit('command palette open', {
+  setup: async (p) => (await p.keyboard.press('Control+k'), p.waitForTimeout(500)),
+})
+await audit('shortcuts sheet open', {
+  setup: async (p) => (await p.keyboard.press('Shift+Slash'), p.waitForTimeout(500)),
+})
+await audit('mobile menu open', {
+  width: 375,
+  setup: async (p) => (await p.click('button[aria-haspopup="dialog"]'), p.waitForTimeout(700)),
+})
 await audit('form errors shown', {
   setup: async (p) => {
     await p.evaluate(() => document.getElementById('contact-form')?.scrollIntoView())

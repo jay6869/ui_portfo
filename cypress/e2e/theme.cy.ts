@@ -7,6 +7,7 @@ describe('theme', () => {
     cy.get('meta[name="theme-color"]').should('have.attr', 'content', '#efeae0')
     cy.reload()
     cy.get('html').should('have.attr', 'data-theme', 'paper')
+    cy.hydrated()
     cy.get('body').type('t')
     cy.get('html').should('have.attr', 'data-theme', 'charcoal')
   })

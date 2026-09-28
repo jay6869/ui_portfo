@@ -20,7 +20,7 @@ export function switchTheme(next: Theme, origin?: { x: number; y: number }) {
   const reduce = matches(QUERIES.reducedMotion)
   if (reduce) return apply(next)
 
-  if (!document.startViewTransition) {
+  if (!document.startViewTransition || document.visibilityState !== 'visible') {
     const html = document.documentElement
     html.classList.add('theme-fade')
     apply(next)
@@ -31,7 +31,19 @@ export function switchTheme(next: Theme, origin?: { x: number; y: number }) {
   const x = origin?.x ?? window.innerWidth - 48
   const y = origin?.y ?? 36
   const r = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y))
-  const vt = document.startViewTransition(() => apply(next))
+  // The update callback needs a rendering opportunity; in a throttled or hidden frame it may
+  // never come. Never let the theme depend on it: apply directly after a short grace period.
+  let applied = false
+  const vt = document.startViewTransition(() => {
+    applied = true
+    apply(next)
+  })
+  window.setTimeout(() => {
+    if (applied) return
+    vt.skipTransition()
+    applied = true
+    apply(next)
+  }, 600)
   void vt.ready.then(() => {
     document.documentElement.animate(
       { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${r}px at ${x}px ${y}px)`] },

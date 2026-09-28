@@ -19,9 +19,11 @@ describe('navigation', () => {
     cy.viewport(375, 812)
     cy.visitQuiet('/')
     cy.contains('button', 'Menu').should('have.attr', 'aria-expanded', 'false').click()
-    cy.get('[role="dialog"]').should('be.visible').within(() => {
-      cy.contains('a', 'Contact').click()
-    })
+    cy.get('[role="dialog"]')
+      .should('be.visible')
+      .within(() => {
+        cy.contains('a', 'Contact').click()
+      })
     cy.get('[role="dialog"]').should('not.exist')
     cy.location('hash').should('eq', '#contact')
   })
@@ -40,6 +42,7 @@ describe('navigation', () => {
     cy.visit('/')
     cy.get('html').should('have.attr', 'data-preloader', 'full')
     cy.get('body').type(' ')
+    cy.get('html').should('have.class', 'pl-skip')
     cy.get('html', { timeout: 4000 }).should('not.have.attr', 'data-preloader')
     cy.window().its('sessionStorage').invoke('getItem', 'jg:seen').should('eq', '1')
   })

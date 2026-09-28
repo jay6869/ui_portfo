@@ -1,7 +1,13 @@
 describe('contact form', () => {
   beforeEach(() => {
-    cy.visitQuiet('/#contact')
+    cy.visitQuiet('/#contact', {
+      // Test seam: capture the mailto: hand-off instead of leaving the page
+      onBeforeLoad: (win) =>
+        ((win as unknown as { __jgOpenMail: unknown }).__jgOpenMail = cy.stub().as('openMail')),
+    })
     cy.get('#contact-form').scrollIntoView()
+    // The server-rendered form works without JS; wait for the RHF/Zod enhancement to swap in
+    cy.get('#contact-form[novalidate]', { timeout: 10000 }).should('exist')
   })
 
   it('shows inline, accessible errors and focuses the first invalid field', () => {
@@ -27,6 +33,10 @@ describe('contact form', () => {
     cy.get('#cf-message').type('Hello! I would like to talk about a small project.')
     cy.wait(2600) // past the anti-bot time trap
     cy.get('#contact-form').contains('button', 'Send it').click()
+    cy.get('@openMail').should(
+      'have.been.calledOnceWith',
+      Cypress.sinon.match(/^mailto:janithzgodage@gmail\.com\?subject=Hello%20from%20Ada/),
+    )
     cy.get('[role="status"]').should('contain.text', 'email app')
   })
 
@@ -37,6 +47,7 @@ describe('contact form', () => {
     cy.get('#cf-message').type('Buy followers, very cheap, limited offer today.')
     cy.get('#contact-form').contains('button', 'Send it').click()
     cy.get('[role="status"]').should('contain.text', 'Thanks for writing')
+    cy.get('@openMail').should('not.have.been.called')
   })
 
   it('copies the email address with a toast', () => {

@@ -109,7 +109,12 @@ export function Marquee({
   )
 
   const copy = (hidden: boolean) => (
-    <ul className={s.copy} aria-hidden={hidden || undefined} aria-label={hidden ? undefined : label} role="list">
+    <ul
+      className={s.copy}
+      aria-hidden={hidden || undefined}
+      aria-label={hidden ? undefined : label}
+      role="list"
+    >
       {items.map((item, i) => (
         <li key={i} className={s.item}>
           {item}

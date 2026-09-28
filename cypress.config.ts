@@ -9,5 +9,13 @@ export default defineConfig({
     screenshotOnRunFailure: true,
     defaultCommandTimeout: 8000,
     retries: { runMode: 1, openMode: 0 },
+    setupNodeEvents(on) {
+      on('task', {
+        log(message: string) {
+          console.log(message)
+          return null
+        },
+      })
+    },
   },
 })

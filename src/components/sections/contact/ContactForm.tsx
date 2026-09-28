@@ -19,9 +19,16 @@ const schema = z.object({
     .trim()
     .min(LIMITS.messageMin, COPY.message.error)
     .max(LIMITS.messageMax, COPY.message.tooLong),
-  company: z.string().max(0).optional(), // honeypot
+  company: z.string().optional(), // honeypot — judged in onSubmit, never a validation error
 })
 type Values = z.infer<typeof schema>
+
+/** Hand off to the mail app. `window.__jgOpenMail` is a test seam (Cypress stubs it). */
+function openMail(href: string) {
+  const hook = (window as unknown as { __jgOpenMail?: (h: string) => void }).__jgOpenMail
+  if (hook) hook(href)
+  else window.location.href = href
+}
 
 /** Anything faster than this from first keystroke to submit is a bot. */
 const MIN_FILL_MS = 2500
@@ -49,7 +56,9 @@ export default function ContactForm() {
     }
     if (!FORM_ENDPOINT) {
       const body = `${v.message}\n\n— ${v.name} (${v.email})`
-      window.location.href = `mailto:${site.email}?subject=${encodeURIComponent(`Hello from ${v.name}`)}&body=${encodeURIComponent(body)}`
+      openMail(
+        `mailto:${site.email}?subject=${encodeURIComponent(`Hello from ${v.name}`)}&body=${encodeURIComponent(body)}`,
+      )
       setStatus('mailto')
       return
     }
