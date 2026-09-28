@@ -1,0 +1,21 @@
+.token {
+  display: inline-block;
+  vertical-align: 0.2em;
+  margin-inline-end: 0.35em;
+  padding: 0.2em 0.55em 0.15em;
+  border: 1px dashed var(--accent-ink);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: var(--tracking-mono);
+  line-height: 1.2;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+  white-space: nowrap;
+}
+.note {
+  color: var(--fg-dim);
+  font-style: italic;
+}

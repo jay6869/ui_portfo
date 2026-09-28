@@ -1,0 +1,102 @@
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-cursor);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s var(--ease-out);
+}
+.root[data-visible='true'] {
+  opacity: 1;
+}
+
+.dotPos,
+.ringPos {
+  position: absolute;
+  top: 0;
+  left: 0;
+  will-change: transform;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  border-radius: 50%;
+  background: var(--accent);
+  transition:
+    transform 0.35s var(--ease-snap),
+    opacity 0.25s var(--ease-out);
+}
+
+.ring {
+  width: 36px;
+  height: 36px;
+  margin: -18px 0 0 -18px;
+  border-radius: 50%;
+  border: 1px solid var(--line-strong);
+  transition:
+    transform 0.5s var(--ease-snap),
+    background-color 0.35s var(--ease-out),
+    border-color 0.35s var(--ease-out),
+    opacity 0.25s var(--ease-out);
+}
+
+.label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%) scale(0.6);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: var(--tracking-mono);
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--fg-on-accent);
+  opacity: 0;
+  transition:
+    opacity 0.25s var(--ease-out),
+    transform 0.45s var(--ease-snap);
+}
+
+/* link: ring grows, dot shrinks */
+.root[data-variant='link'] .ring {
+  transform: scale(1.6);
+  border-color: var(--accent);
+}
+.root[data-variant='link'] .dot {
+  transform: scale(0.5);
+}
+
+/* labelled states (external links "Open", project rows "View", drag): filled clay disc */
+.root[data-has-label='true'] .ring {
+  transform: scale(2.3);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.root[data-has-label='true'] .label {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.root[data-has-label='true'] .dot {
+  opacity: 0;
+}
+
+.root[data-variant='view'] .ring {
+  transform: scale(2.6);
+}
+.root[data-variant='drag'] .ring {
+  transform: scale(2.3);
+}
+
+.root[data-variant='hidden'] .ring,
+.root[data-variant='hidden'] .dot {
+  opacity: 0;
+}
+
+.root[data-down='true'] .ring {
+  transform: scale(0.85);
+}
+.root[data-down='true'][data-has-label='true'] .ring {
+  transform: scale(2);
+}

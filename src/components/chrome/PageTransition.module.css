@@ -1,0 +1,32 @@
+.panel {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-transition);
+  display: grid;
+  place-items: center;
+  background: var(--bg-curtain);
+  color: var(--bone);
+  transform: translateY(100%);
+  pointer-events: none;
+  will-change: transform;
+}
+.panel[data-phase='cover'],
+.panel[data-phase='reveal'] {
+  pointer-events: auto;
+}
+.inner {
+  display: grid;
+  gap: var(--space-xs);
+  justify-items: center;
+  text-align: center;
+  padding-inline: var(--margin);
+}
+.inner :global(.mono) {
+  color: var(--bone-dim);
+}
+.title {
+  font-family: var(--font-display);
+  font-size: var(--step-4);
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
+}

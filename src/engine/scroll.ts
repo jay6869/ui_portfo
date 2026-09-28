@@ -65,11 +65,13 @@ export const scroller = {
   },
 }
 
-export async function initScroll(): Promise<() => void> {
-  if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
-  if (matches(QUERIES.reducedMotion)) return () => {}
+let refs = 0
+let creating: Promise<void> | null = null
 
+async function create() {
+  if (matches(QUERIES.reducedMotion)) return
   const { default: Locomotive } = await import('locomotive-scroll')
+  if (refs === 0 || loco) return
   loco = new Locomotive({
     lenisOptions: {
       lerp: 0.105,
@@ -83,10 +85,28 @@ export async function initScroll(): Promise<() => void> {
     destroyCustomTicker: (render) => gsap.ticker.remove(render),
   })
   document.documentElement.classList.add('is-smooth')
+  ScrollTrigger.refresh()
+}
 
+function destroy() {
+  loco?.destroy()
+  loco = null
+  creating = null
+  document.documentElement.classList.remove('is-smooth')
+}
+
+/**
+ * Reference-counted: returns a release function. Destruction is deferred a tick so React
+ * StrictMode's mount → unmount → mount doesn't tear the engine down and rebuild it.
+ */
+export function acquireScroll(): () => void {
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
+  refs++
+  creating ??= create()
   return () => {
-    loco?.destroy()
-    loco = null
-    document.documentElement.classList.remove('is-smooth')
+    refs--
+    window.setTimeout(() => {
+      if (refs === 0) destroy()
+    }, 0)
   }
 }

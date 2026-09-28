@@ -1,0 +1,20 @@
+.skip {
+  position: fixed;
+  top: var(--space-s);
+  left: var(--space-s);
+  z-index: calc(var(--z-preloader) + 1);
+  padding: 0.7em 1.1em;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: var(--fg-on-accent);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  letter-spacing: var(--tracking-mono);
+  text-transform: uppercase;
+  transform: translateY(-160%);
+  transition: transform 0.35s var(--ease-snap);
+}
+.skip:focus-visible {
+  transform: translateY(0);
+  outline-color: var(--fg);
+}
