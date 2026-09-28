@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en" data-theme="charcoal">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#1d1c1a" />
+    <meta name="color-scheme" content="dark light" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <script>
+      /* Runs before first paint: theme, JS flag, preloader decision, hydration failsafe. */
+      ;(function () {
+        var d = document.documentElement
+        d.classList.add('js')
+        var theme = 'charcoal'
+        try {
+          var saved = localStorage.getItem('jg:theme')
+          if (saved === 'paper' || saved === 'charcoal') theme = saved
+          else if (matchMedia('(prefers-color-scheme: light)').matches) theme = 'paper'
+        } catch (e) {}
+        d.setAttribute('data-theme', theme)
+        var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
+        try {
+          if (!sessionStorage.getItem('jg:seen')) d.setAttribute('data-preloader', reduce ? 'short' : 'full')
+          else d.setAttribute('data-intro', 'return')
+        } catch (e) {}
+        /* If the app never hydrates (script blocked, network died), show the static page. */
+        setTimeout(function () {
+          if (!window.__jgHydrated) {
+            d.classList.remove('js')
+            d.removeAttribute('data-preloader')
+            d.removeAttribute('data-intro')
+          }
+        }, 6000)
+      })()
+    </script>
+    <!--app-head-->
+  </head>
+  <body>
+    <div id="root"><!--app-html--></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

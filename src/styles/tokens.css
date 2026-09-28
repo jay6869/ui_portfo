@@ -1,0 +1,156 @@
+/*
+ * Design tokens — the whole site is themed from this file.
+ * Components reference SEMANTIC tokens (--bg, --fg, --accent …) only.
+ * See DESIGN.md for the reasoning and measured contrast ratios.
+ */
+
+:root {
+  /* ── Raw palette ─────────────────────────────────────────────── */
+  --ink-950: #131211;
+  --ink-900: #1a1917;
+  --ink-800: #1d1c1a;
+  --ink-700: #262523;
+  --ink-600: #34322f;
+  --bone: #ece6da;
+  --bone-dim: #a39e93;
+  --clay: #e8956a;
+  --clay-deep: #9a4a26;
+  --sage: #a8b5a0;
+  --paper: #efeae0;
+
+  /* ── Semantic: Charcoal (default) ────────────────────────────── */
+  --bg: var(--ink-800);
+  --bg-raised: var(--ink-700);
+  --bg-sunken: var(--ink-900);
+  --bg-hover: var(--ink-600);
+  --bg-curtain: var(--ink-950);
+  --fg: var(--bone);
+  --fg-dim: var(--bone-dim);
+  --fg-on-accent: var(--ink-800);
+  --line: rgba(236, 230, 218, 0.1);
+  --line-strong: rgba(236, 230, 218, 0.22);
+  --accent: var(--clay);
+  --accent-ink: var(--clay);
+  --status: var(--sage);
+  --lamp: rgba(232, 149, 106, 0.07);
+  --grain-opacity: 0.055;
+  --grain-blend: overlay;
+  --shadow-deep: 0 30px 80px -30px rgba(0, 0, 0, 0.6);
+
+  /* Art (generative covers + blob): stays in palette, themeable */
+  --art-1: var(--ink-700);
+  --art-2: var(--ink-600);
+  --art-3: var(--bone);
+  --art-4: var(--clay);
+
+  color-scheme: dark;
+
+  /* ── Type ─────────────────────────────────────────────────────── */
+  --font-display:
+    'Instrument Serif', 'Instrument Serif Fallback: Times New Roman',
+    'Instrument Serif Fallback: Georgia', 'Times New Roman', serif;
+  --font-body:
+    'Hanken Grotesk Variable', 'Hanken Grotesk Variable Fallback: Arial',
+    'Hanken Grotesk Variable Fallback: Helvetica', system-ui, sans-serif;
+  --font-mono:
+    'JetBrains Mono Variable', 'JetBrains Mono Variable Fallback: Courier New', ui-monospace,
+    monospace;
+
+  /* Fluid scale — 320px → 1920px */
+  --step--2: clamp(0.6875rem, 0.67rem + 0.08vw, 0.75rem);
+  --step--1: clamp(0.8125rem, 0.79rem + 0.1vw, 0.9rem);
+  --step-0: clamp(1rem, 0.975rem + 0.125vw, 1.125rem);
+  --step-1: clamp(1.2rem, 1.15rem + 0.25vw, 1.45rem);
+  --step-2: clamp(1.6rem, 1.44rem + 0.8vw, 2.4rem);
+  --step-3: clamp(2.2rem, 1.8rem + 2vw, 4.2rem);
+  --step-4: clamp(3rem, 2.1rem + 4.5vw, 7.5rem);
+  --step-5: clamp(3.6rem, 2.2rem + 7vw, 10.5rem);
+  --step-hero: clamp(4.5rem, 19.5vw, 30rem);
+
+  --leading-display: 0.92;
+  --leading-tight: 1.15;
+  --leading-body: 1.6;
+  --tracking-display: -0.02em;
+  --tracking-mono: 0.12em;
+  --measure: 62ch;
+
+  /* ── Space & grid ────────────────────────────────────────────── */
+  --space-3xs: 0.25rem;
+  --space-2xs: 0.5rem;
+  --space-xs: 0.75rem;
+  --space-s: 1rem;
+  --space-m: 1.5rem;
+  --space-l: 2.5rem;
+  --space-xl: clamp(3rem, 2rem + 4vw, 6rem);
+  --space-2xl: clamp(5rem, 3rem + 8vw, 11rem);
+  --space-section: clamp(6rem, 4rem + 10vw, 14rem);
+
+  --columns: 4;
+  --gutter: clamp(12px, 1.6vw, 24px);
+  --margin: clamp(16px, 4vw, 64px);
+  --header-h: 64px;
+  --radius-s: 2px;
+  --radius-m: 6px;
+  --radius-pill: 999px;
+  --hairline: 1px solid var(--line);
+
+  /* ── Motion ──────────────────────────────────────────────────── */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-snap: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-inout: cubic-bezier(0.76, 0, 0.24, 1);
+  --dur-micro: 0.4s;
+  --dur-enter: 0.9s;
+  --dur-wipe: 0.5s;
+
+  /* ── Layers ──────────────────────────────────────────────────── */
+  --z-base: 1;
+  --z-hud: 40;
+  --z-header: 50;
+  --z-shared: 60;
+  --z-transition: 70;
+  --z-dialog: 80;
+  --z-toast: 90;
+  --z-preloader: 100;
+  --z-grain: 110;
+  --z-cursor: 120;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --columns: 8;
+  }
+}
+@media (min-width: 1024px) {
+  :root {
+    --columns: 12;
+    --header-h: 72px;
+  }
+}
+
+/* ── Semantic: Paper ───────────────────────────────────────────── */
+:root[data-theme='paper'] {
+  --bg: var(--paper);
+  --bg-raised: #e6e0d4;
+  --bg-sunken: #e8e2d6;
+  --bg-hover: #ddd6c8;
+  --bg-curtain: var(--ink-800);
+  --fg: var(--ink-800);
+  --fg-dim: #5e5950;
+  --fg-on-accent: var(--ink-800);
+  --line: rgba(29, 28, 26, 0.12);
+  --line-strong: rgba(29, 28, 26, 0.26);
+  --accent: var(--clay);
+  --accent-ink: var(--clay-deep);
+  --status: #5c7352;
+  --lamp: rgba(232, 149, 106, 0.12);
+  --grain-opacity: 0.07;
+  --grain-blend: multiply;
+  --shadow-deep: 0 30px 80px -40px rgba(60, 40, 20, 0.35);
+
+  --art-1: #e2dbcd;
+  --art-2: #d3cabb;
+  --art-3: var(--ink-800);
+  --art-4: var(--clay);
+
+  color-scheme: light;
+}

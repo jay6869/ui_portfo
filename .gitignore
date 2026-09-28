@@ -1,0 +1,12 @@
+node_modules
+dist
+dist-ssr
+storybook-static
+stats.html
+.env
+.env.local
+*.log
+cypress/videos
+cypress/screenshots
+.shots
+.lighthouse
