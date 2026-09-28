@@ -163,22 +163,22 @@ Measured on this machine against the production build (`npm run preview`). Light
 13.5, mobile preset, simulated slow 4G and 4× CPU. Numbers vary slightly between runs;
 these are typical of 3–4 consecutive runs.
 
-| Budget                                          | Target          | Result                                                                                        |
-| ----------------------------------------------- | --------------- | --------------------------------------------------------------------------------------------- |
-| Lighthouse Performance (home)                   | ≥ 95            | **98**                                                                                        |
-| Lighthouse Performance (case study)             | ≥ 95            | **98**                                                                                        |
-| Accessibility / Best Practices / SEO            | 100 / 100 / 100 | **100 / 100 / 100** (both routes)                                                             |
-| LCP                                             | < 2.0 s         | **1.8 s** (home), 1.8–1.9 s (case study)                                                      |
-| CLS                                             | < 0.02          | **0.002–0.003**                                                                               |
-| TBT (lab proxy for responsiveness)              | —               | **10–30 ms**                                                                                  |
-| INP (Event Timing, 4× CPU, 8 real interactions) | < 200 ms        | **p98 160 ms** (worst case: opening ⌘K)                                                       |
-| Initial JS (entry + preloads)                   | ≤ 180 KB gzip   | **168.9 KB gzip** / 149.5 KB brotli, fetched after first paint                                |
-| Inlined CSS                                     | —               | 12.5 KB brotli                                                                                |
-| Home HTML (incl. CSS)                           | —               | 21.9 KB brotli                                                                                |
-| axe-core (WCAG 2.2 AA + best practices)         | 0               | **0 violations** in 11 scenarios (both themes, mobile, dialogs, form errors)                  |
-| Keyboard walkthrough                            | all reachable   | 74 tab stops on the home page, every one with a visible clay focus ring; ⌘K and Esc verified  |
-| Reduced motion                                  | —               | Preloader is a short fade (under 600 ms); no smooth scroll, WebGL, parallax or marquee travel |
-| Cypress smoke suite                             | pass            | **14 / 14**                                                                                   |
+| Budget                                          | Target          | Result                                                                                                     |
+| ----------------------------------------------- | --------------- | ---------------------------------------------------------------------------------------------------------- |
+| Lighthouse Performance (home)                   | ≥ 95            | **98**                                                                                                     |
+| Lighthouse Performance (case study)             | ≥ 95            | **98**                                                                                                     |
+| Accessibility / Best Practices / SEO            | 100 / 100 / 100 | **100 / 100 / 100** (both routes)                                                                          |
+| LCP                                             | < 2.0 s         | **1.8 s** (home), 1.8–1.9 s (case study)                                                                   |
+| CLS                                             | < 0.02          | **0.002–0.003** typical; occasionally 0.015 on a case study as the preloader curtain exits (always < 0.02) |
+| TBT (lab proxy for responsiveness)              | —               | **10–30 ms**                                                                                               |
+| INP (Event Timing, 4× CPU, 8 real interactions) | < 200 ms        | **p98 160 ms** (worst case: opening ⌘K)                                                                    |
+| Initial JS (entry + preloads)                   | ≤ 180 KB gzip   | **168.9 KB gzip** / 149.5 KB brotli, fetched after first paint                                             |
+| Inlined CSS                                     | —               | 12.5 KB brotli                                                                                             |
+| Home HTML (incl. CSS)                           | —               | 21.9 KB brotli                                                                                             |
+| axe-core (WCAG 2.2 AA + best practices)         | 0               | **0 violations** in 11 scenarios (both themes, mobile, dialogs, form errors)                               |
+| Keyboard walkthrough                            | all reachable   | 74 tab stops on the home page, every one with a visible clay focus ring; ⌘K and Esc verified               |
+| Reduced motion                                  | —               | Preloader is a short fade (under 600 ms); no smooth scroll, WebGL, parallax or marquee travel              |
+| Cypress smoke suite                             | pass            | **14 / 14**                                                                                                |
 
 Lazy chunks (gzip), each loaded only when needed: p5 311 KB (on "Start sketch"),
 Three.js blob 128 KB (idle, capable GPUs only), Tone.js 77 KB (first key press or sound on),
